@@ -3,7 +3,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:livetv2024/app/constant/color.dart';
 import 'package:livetv2024/app/screen/subscribe/monthly_sub.dart';
-import 'package:livetv2024/app/screen/subscribe/yearly_sub.dart';
 import 'package:livetv2024/app/widgets/button.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
 
@@ -12,8 +11,6 @@ import '../../widgets/custom_appbar.dart';
 
 class SubscribePage extends StatelessWidget {
   const SubscribePage({super.key});
-
-
 
 
   @override

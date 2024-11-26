@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:livetv2024/app/screen/channel_screen.dart';
 import 'package:livetv2024/app/widgets/button.dart';
 import 'package:livetv2024/app/widgets/custom_appbar.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
@@ -108,7 +107,8 @@ class PaymentPage extends StatelessWidget {
                     24.verticalSpace,
                     CustomButton(
                         onTap: () {
-                          Get.off(const ChannelScreen());
+                          controller.paymentOk();
+                          //Get.off(const ChannelScreen());
                         },
                         title: 'Pay Now',
                         gradient: AppColor.gradient,)

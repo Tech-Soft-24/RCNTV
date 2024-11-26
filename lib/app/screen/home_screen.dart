@@ -2,7 +2,6 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:livetv2024/app/screen/subscribe/subscribe_page.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
 import '../constant/color.dart';
 import '../widgets/home_container.dart';
@@ -55,7 +54,7 @@ class HomeScreen extends StatelessWidget {
                 child: CarouselSlider(
                   items: controller.imageCarousal.map((image) => Builder(builder: (context) {
                     return Container(
-                      height: 125.0,
+                      height: 130.0,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: BoxDecoration(
                         image: DecorationImage(
@@ -120,7 +119,8 @@ class HomeScreen extends StatelessWidget {
               24.verticalSpace,
               HomeContainer(
                 onTap: () {
-                  Get.to(const SubscribePage());
+                  controller.subscribe();
+                  //Get.to(const SubscribePage());
                   //  Get.to(const ChannelScreen());
                 },
                 title: 'Live TV',
