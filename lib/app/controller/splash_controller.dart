@@ -2,8 +2,10 @@
 
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
+import 'package:livetv2024/bcodez/otp_signup.dart';
 import 'package:livetv2024/app/screen/home_screen.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
+import '../screen/auth/otp1.dart';
 import '../screen/auth/login_screen.dart';
 
 class SplashController extends GetxController{
@@ -18,8 +20,9 @@ class SplashController extends GetxController{
     if(loggedIn == true){
       Future.delayed(const Duration(seconds: 4), () => Get.off(const HomeScreen()));
     } else {
-      Future.delayed(const Duration(seconds: 4), () => Get.off(const LoginScreen()));
-    }
+      // Future.delayed(const Duration(seconds: 4), () => Get.off(const OtpSignupScreen()));
+       Future.delayed(const Duration(seconds: 4), () => Get.off(const SignInOrSignUpWithPhone()));
+     }
   }
 
   @override

@@ -12,8 +12,9 @@ class CustomSnackBar {
       colorText: AppColor.white,
       backgroundColor: color ?? Colors.green,
       icon: const Icon(
-        Icons.check_circle,
+        Icons.phone_android_outlined,
         color: AppColor.white,
       ),
     );
-  }}
+  }
+}

@@ -56,11 +56,13 @@ class HomeScreen extends StatelessWidget {
                     return Container(
                       height: 130.0,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
-                      decoration: BoxDecoration(
+                      decoration: image["img-path"] == "" && image["img-path"].isEmpty ? BoxDecoration(
+                        color: AppColor.purple,
+                        borderRadius: BorderRadius.circular(
+                            16),
+                      ) : BoxDecoration(
                         image: DecorationImage(
-                          image: NetworkImage(
-                            image["img-path"],
-                          ),
+                          image: NetworkImage(image["img-path"]),
                           fit: BoxFit.cover,
                         ),
                         borderRadius: BorderRadius.circular(
@@ -78,7 +80,7 @@ class HomeScreen extends StatelessWidget {
                         controller.currentIndex.value = index;
                       },
                       autoPlay: true,
-                      autoPlayInterval: const Duration(seconds: 3),
+                      autoPlayInterval: const Duration(seconds: 5),
                       autoPlayAnimationDuration: const Duration(milliseconds: 800)
 
                   ),
