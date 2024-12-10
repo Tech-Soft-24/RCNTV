@@ -28,14 +28,14 @@ class MonthYearSub extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Image.asset('assets/images/logo.png', height: 24, width: 98)),
             24.verticalSpace,
-             Text('Unlock All Channels',style: AppTextStyle.grey32w500),
+             const Text('Unlock All Channels',style: AppTextStyle.grey32w500),
             Divider(
               color: AppColor.black.withOpacity(0.2),
               thickness: 1.0,
               height: 32,
             ),
 
-             Text('PLAN',style: AppTextStyle.grey16w500),
+             const Text('PLAN',style: AppTextStyle.grey16w500),
             8.verticalSpace,
             Text('$title Subscription',style: AppTextStyle.grey20w700),
             Divider(
@@ -43,15 +43,15 @@ class MonthYearSub extends StatelessWidget {
               thickness: 1.0,
               height: 32,
             ),
-            Text('PRICE',style: AppTextStyle.grey16w500) ,
+            const Text('PRICE',style: AppTextStyle.grey16w500) ,
             8.verticalSpace,
-            Text(price ??'200 TK / Month',style: AppTextStyle.grey20w700),
+            Text(price ??' TK / Month',style: AppTextStyle.grey20w700),
             Divider(
               color: AppColor.black.withOpacity(0.2),
               thickness: 1.0,
               height: 32,
             ),
-            CustomButton(onTap: (){Get.off(const PaymentPage());}, title: 'Continue to Payment', gradient: AppColor.gradient,)
+            CustomButton(onTap: (){Get.off(PaymentPage(price: price??""));}, title: 'Continue to Payment', gradient: AppColor.gradient,)
           ],
         ),
       ),

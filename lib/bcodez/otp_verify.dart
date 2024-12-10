@@ -1,14 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:livetv2024/app/screen/home_screen.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
 import 'package:pinput/pinput.dart';
 import '../app/constant/color.dart';
 import '../app/constant/text.dart';
 import '../app/widgets/button.dart';
-import '../app/widgets/snackbar.dart';
-import '../app/widgets/textfornfield.dart';
 
 class OtpVerifyScreen extends StatelessWidget {
   const OtpVerifyScreen({super.key});
@@ -94,7 +91,7 @@ class OtpVerifyScreen extends StatelessWidget {
                 ),
               ),
               onCompleted: (pin) {
-                controller.otpConfirm(pin: controller.pinController.text);
+              //  controller.otpConfirm(pin: controller.pinController.text);
               },
             ),
             24.verticalSpace,
@@ -102,7 +99,9 @@ class OtpVerifyScreen extends StatelessWidget {
               title: 'Verify OTP',
               //color: AppColor.teal,
               gradient: AppColor.gradient,
-              onTap: () {controller.otpConfirm(pin: controller.pinController.text);},
+              onTap: () {
+              //  controller.otpConfirm(pin: controller.pinController.text);
+                },
             ),
           ],
         ),

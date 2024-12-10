@@ -1,11 +1,9 @@
 import 'dart:async';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
 import 'package:get_storage/get_storage.dart';
 
 import 'package:http/http.dart' as http;
@@ -13,6 +11,7 @@ import 'package:livetv2024/app/screen/home_screen.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../../bcodez/app_controller.dart';
 import '../../constant/color.dart';
 import '../../constant/text.dart';
 import '../../widgets/button.dart';
@@ -31,6 +30,8 @@ class VerifyOtpScreen extends StatefulWidget {
 }
 
 class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
+  AppController controller = Get.put(AppController());
+
   final TextEditingController pinController = TextEditingController();
   final FocusNode focusNode = FocusNode();
   final GlobalKey<FormState> formKey = GlobalKey<FormState>();
@@ -222,7 +223,9 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     focusNode.unfocus();
                       if (formKey.currentState!.validate() && pinController.text == widget.generatedOtp) {
                         _navigateToGDetails();
-                        // Get.offAll(const HomeScreen());
+                        controller.getUser();
+                        box.write('isLogged', true);
+                        Get.offAll(()=>const HomeScreen());
                       }},
                 ),
 
@@ -239,14 +242,14 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     final data = await _checkPhoneNumberExists(widget.phoneNumber);
     if (data.isNotEmpty) {
       // Save the data in SharedPreferences
-      final SharedPreferences prefs = await SharedPreferences.getInstance();
-      prefs.setString('phoneNumber', data['phoneNumber']);
+    //  final SharedPreferences prefs = await SharedPreferences.getInstance();
+    //  prefs.setString('phoneNumber', data['phoneNumber']);
+
 
       //prefs.setString('phoneNumber', data['phoneNumber']).whenComplete(() => getuserNumber(),);
       // log(prefs.getString('phoneNumber').toString());
     //  Get.put(MainScreenController()).currentIndex(0);
-      box.write('isLogged', true);
-      Get.offAll(const HomeScreen());
+
     } else {
       print('Phone number does not exist in Firestore');
     }
@@ -260,15 +263,15 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     if (snapshot.docs.isNotEmpty) {
       await FirebaseFirestore.instance.collection('Users').doc(phoneNumber).update({'deviceToken': token, 'active': true});
       var data = snapshot.docs.first.data();
-      box.write('payment', data['payment']);
-      print(data.toString());
+      box.write('phoneNumber', data['phoneNumber']);
+    //  print(data.toString());
       return data;
     } else {
       await FirebaseServices.createUser(phoneNumber, token);
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseServices.getUser(phoneNumber);
       var data = snapshot.docs.first.data();
-      box.write('payment', data['payment']);
-      print(data.toString());
+      box.write('phoneNumber', data['phoneNumber']);
+    //  print(data.toString());
       return data;
     }
   }
@@ -297,7 +300,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     http.Response response = await http.post(Uri.parse(apiUrl), body: data);
     if (response.statusCode == 200) {
       CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP send successfully');
-      Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black));
+      Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       print(otp);
       return otp;
     } else {
@@ -323,7 +326,7 @@ class FirebaseServices {
       "address": "unknown",
       "deviceToken": deviceToken,
       'active': true,
-      'payment': 'pending'
+      'payment': 'active'
     });
   }
 
@@ -331,29 +334,5 @@ class FirebaseServices {
     return await FirebaseFirestore.instance.collection('Users').where(
         'phoneNumber', isEqualTo: phoneNumber).get();
   }
-  // static Future<List<Map<String, dynamic>>> getUser(String phoneNumber) async {
-  //   List<Map<String, dynamic>> userDataList = [];
-  //
-  //   await FirebaseFirestore.instance
-  //       .collection('Users')
-  //       .where('phoneNumber', isEqualTo: phoneNumber)
-  //       .get()
-  //       .then((QuerySnapshot<Map<String, dynamic>> querySnapshot) {
-  //     querySnapshot.docs.forEach((doc) {
-  //       userDataList.add({
-  //         'createAt': doc['createAt'],
-  //         'phoneNumber': doc['phoneNumber'],
-  //         'profile_img': doc['profile_img'],
-  //         'name': doc['name'],
-  //         'address': doc['address'],
-  //         'deviceToken': doc['deviceToken'],
-  //         'active': doc['active'],
-  //         'payment': doc['payment'],
-  //         'document_id': doc.id,
-  //       });
-  //     });
-  //   });
-  //
-  //   return userDataList;
-  // }
+
 }

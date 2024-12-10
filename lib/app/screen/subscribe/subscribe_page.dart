@@ -33,19 +33,20 @@ class SubscribePage extends StatelessWidget {
               24.verticalSpace,
               Container(
                 padding: const EdgeInsets.all(5),
+              //  margin: const EdgeInsets.symmetric(horizontal: 91),
                 height: 50,
-                width: 186,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
                     color: AppColor.purple.withOpacity(0.2)
                 ),
-                child: Center(
-                  child: ListView.builder(
-                      itemCount: controller.subscribeList.length,
-                      scrollDirection: Axis.horizontal,
-                      physics: const NeverScrollableScrollPhysics(),
-                      itemBuilder: (_,index){
-                        return InkWell(
+                child: ListView.builder(
+                    itemCount: controller.subscribeList.length,
+                    scrollDirection: Axis.horizontal,
+                  //  physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (_,index){
+                      return Obx(
+                          ()=> InkWell(
                           borderRadius: BorderRadius.circular(50),
                           onTap: (){
                             controller.selectIndex.value = index;
@@ -55,19 +56,21 @@ class SubscribePage extends StatelessWidget {
                               controller.monthSelect.value = true;
                             }
                           },
-                          child: Obx(
-                                ()=> Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                          child: Container(
+                            //  padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
                               decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(50),
                                   color: controller.selectIndex.value == index ? AppColor.pink :Colors.transparent
                               ),
-                              child: Center(child: Text(controller.subscribeList[index],style: const TextStyle(color: AppColor.white,fontSize: 14,fontWeight: FontWeight.w600),)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 20,vertical: 10),
+                                child: Center(child: Text(controller.subscribeList[index],style: const TextStyle(color: AppColor.white,fontSize: 14,fontWeight: FontWeight.w600),)),
+                              ),
                             ),
-                          ),
-                        );
-                      }),
-                ),
+
+                        ),
+                      );
+                    }),
 
               ),
               24.verticalSpace,
@@ -93,9 +96,9 @@ class SubscribePage extends StatelessWidget {
               24.verticalSpace,
               CustomButton(onTap: (){
                 if(controller.monthSelect.value==true){
-                  Get.to(const MonthYearSub(title: 'Monthly',));
+                  Get.to(const MonthYearSub(title: 'Monthly', price: '200'));
                 } else {
-                  Get.to(const MonthYearSub(title: 'Yearly', price: '2000 TK/ Year',));
+                  Get.to(const MonthYearSub(title: 'Yearly', price: '2000',));
                 }
               }, title: 'Subscribe Now', gradient: AppColor.gradient,)
 

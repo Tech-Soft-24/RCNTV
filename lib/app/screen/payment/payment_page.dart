@@ -3,6 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:livetv2024/app/widgets/button.dart';
 import 'package:livetv2024/app/widgets/custom_appbar.dart';
+import 'package:livetv2024/app/widgets/snackbar.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
 
 import '../../constant/color.dart';
@@ -10,7 +11,9 @@ import '../../constant/text.dart';
 import '../../widgets/textfornfield.dart';
 
 class PaymentPage extends StatelessWidget {
-  const PaymentPage({super.key});
+  const PaymentPage({super.key, required this.price});
+
+  final String? price;
 
   @override
   Widget build(BuildContext context) {
@@ -48,7 +51,7 @@ class PaymentPage extends StatelessWidget {
                     ),
                     16.verticalSpace,
                     CustomTextField(
-                      textController: controller.amountController,
+                      textController: controller.amountController..text=price!,
                       hintText: 'Amount',
                     ),
                     16.verticalSpace,
@@ -105,13 +108,26 @@ class PaymentPage extends StatelessWidget {
                       ),
                     ),
                     24.verticalSpace,
-                    CustomButton(
-                        onTap: () {
-                          controller.paymentOk();
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: CustomButton(
+                          onTap: () {
+                            int endTime;
+                           if(controller.mobileController.text.isEmpty || controller.amountController.text.isEmpty || controller.transactionController.text.isEmpty || controller.selectedLang.value ==''){
+                             CustomSnackBar.showSnackBar(title: 'Error', message: "Box shouldn't be empty",color: Colors.red);
+                           } else{
+                             if(price=='200'){
+                                endTime = 30;
+                             } else {
+                                endTime = 365;
+                             }
+                            controller.paymentOk(payMob: controller.mobileController.text, payId: controller.transactionController.text, package: controller.amountController.text, endTime : endTime);
+                          }
                           //Get.off(const ChannelScreen());
-                        },
-                        title: 'Pay Now',
-                        gradient: AppColor.gradient,)
+                          },
+                          title: 'Pay Now',
+                          gradient: AppColor.gradient,),
+                    )
                   ],
                 ),
               ),

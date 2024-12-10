@@ -57,7 +57,7 @@ class LoginScreen extends StatelessWidget {
                      // color: AppColor.purple,
                       gradient: AppColor.gradient,
                       onTap: () {
-                        controller.login(controller.emailController.text, controller.passwordController.text);
+                      //  controller.login(controller.emailController.text, controller.passwordController.text);
                       //  Get.offAll(const HomeScreen());
                       },
                     ),

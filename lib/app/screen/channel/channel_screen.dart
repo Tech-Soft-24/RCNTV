@@ -14,7 +14,7 @@ class ChannelScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return GetBuilder(
+    return GetX(
         init: AppController(),
         builder: (controller){
 
