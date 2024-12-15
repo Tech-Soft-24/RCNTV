@@ -40,7 +40,7 @@ class SubscribePage extends StatelessWidget {
                     color: AppColor.purple.withOpacity(0.2)
                 ),
                 child: ListView.builder(
-                    itemCount: controller.subscribeList.length,
+                    itemCount: controller.paymentOption.length,
                     scrollDirection: Axis.horizontal,
                   //  physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
@@ -80,7 +80,8 @@ class SubscribePage extends StatelessWidget {
                 thickness: 1.0,
                 height: 32,
               ),
-              Obx(()=> Text(controller.monthSelect.value == true? '200 TK / Month' : '2000 TK / Year',style: AppTextStyle.grey20w700,)),
+              //Obx(()=> Text(controller.monthSelect.value == true? '${controller.paymentOption[0]['package']}' : '${controller.paymentOption[1]['package']}',style: AppTextStyle.grey20w700,)),
+              Obx(()=> Text('${controller.paymentOption[controller.selectIndex.value]['package']}',style: AppTextStyle.grey20w700,)),
               8.verticalSpace,
               const Text('Unlimited Access to Premium Content',style: AppTextStyle.grey14w500,),
               Divider(
@@ -95,11 +96,10 @@ class SubscribePage extends StatelessWidget {
                const Text('✓ Cancel Anytime',style:  AppTextStyle.grey16w500),
               24.verticalSpace,
               CustomButton(onTap: (){
-                if(controller.monthSelect.value==true){
-                  Get.to(const MonthYearSub(title: 'Monthly', price: '200'));
-                } else {
-                  Get.to(const MonthYearSub(title: 'Yearly', price: '2000',));
-                }
+
+                  Get.to( MonthYearSub(title: '${controller.paymentOption[controller.selectIndex.value]['planText']}', price: '${controller.paymentOption[controller.selectIndex.value]['tk']}'));
+
+
               }, title: 'Subscribe Now', gradient: AppColor.gradient,)
 
             ],

@@ -33,7 +33,68 @@ class HomeScreen extends StatelessWidget {
         ),
         actions: [
           InkWell(
-            onTap: (){controller.logout();},
+            onTap: (){showDialog(
+                context: context,
+                builder: (_) {
+                  return Dialog(
+                    backgroundColor: AppColor.white,
+                    child: Container(
+                      padding: const EdgeInsets.only(top: 55,bottom: 40),
+                      height: 465,
+                      width: double.maxFinite,
+                      decoration: BoxDecoration(
+                          color: AppColor.white, borderRadius: BorderRadius.circular(20)),
+                      child: Column(
+                        children: [
+                          const Text(
+                            'You are Enjoying Premium Package',
+                            textAlign: TextAlign.center,
+                            softWrap: true,
+                            style: AppTextStyle.purple16w500,
+                          ),
+                          100.verticalSpace,
+                          const SizedBox(
+                              width: 245,
+                              child: Text(
+                                'Are you sure you want to Logout?',
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                                style: AppTextStyle.grey16w500,
+                              )),
+                          20.verticalSpace,
+                          Padding(
+                            padding: const EdgeInsets.symmetric(horizontal: 50.0),
+                            child: SizedBox(
+                              height: 50,
+                              width: double.maxFinite,
+                              child: ElevatedButton(
+                                onPressed: () async{
+                                  controller.logout();
+                                },
+                                style: ElevatedButton.styleFrom(
+                                    backgroundColor: AppColor.purple,
+                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                    shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(100))),
+                                child: const Text(
+                                  "Log Out",
+                                  style: AppTextStyle.white20w600,
+                                ),
+                              ),
+                            ),
+                          ),
+                          20.verticalSpace,
+                          TextButton(
+                              onPressed: () => Get.back(),
+                              child: const Text(
+                                "No I Don't",
+                                style: AppTextStyle.purple16w500,
+                              ))
+                        ],
+                      ),
+                    ),
+                  );
+                });},
             borderRadius: BorderRadius.circular(100),
             child: Container(
               margin: const EdgeInsets.only(right: 20),

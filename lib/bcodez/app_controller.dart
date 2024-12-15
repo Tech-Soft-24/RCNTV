@@ -63,7 +63,7 @@ class AppController extends GetxController {
   RxInt currentIndex = 0.obs;
 
   RxString selectedLang = ''.obs;
-  List<String> payment = ['Bkash', 'Nagad', 'Rocket', 'Upay'];
+  List<String> payment = ['bKash', 'Nagad', 'Rocket', 'Upay'];
   final box = GetStorage();
 
   RxInt selectIndex = 0.obs;
@@ -74,6 +74,8 @@ class AppController extends GetxController {
   RxList<Map<String, String>> headers = <Map<String, String>>[].obs;
   RxList imageCarousal = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> users = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> paymentOption = <Map<String, dynamic>>[].obs;
+
 
   RxInt selectedIndex = 0.obs;
   List catList = ['All', 'News', 'Sports', 'Kids', 'Entertainment', 'Movie'];
@@ -89,6 +91,7 @@ class AppController extends GetxController {
 
   RxBool fullscreen = false.obs;
   RxString paymentValue = ''.obs;
+
 
   fetchData() async {
     channel.clear();
@@ -131,6 +134,29 @@ class AppController extends GetxController {
     }
   }
 
+  fetchPaymentOption() async {
+    paymentOption.clear();
+    try {
+      await FirebaseFirestore.instance
+          .collection('payment')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          paymentOption.add({
+            'package': element['package'],
+            'tk': element['tk'],
+            'planText': element['planText'],
+            'payNum': element['payNum'],
+            'helpNum': element['helpNum'],
+            'document_id': element.id,
+          });
+        });
+      });
+    } catch (e) {
+      // TODO
+    }
+  }
+
   ///
   // login(String email, String password) {
   //   // Simple login logic using if-else
@@ -164,6 +190,7 @@ class AppController extends GetxController {
   paymentOk(
       {required String payMob,
       required String payId,
+      required String payBy,
       required String package,
       required int endTime}) async {
     var userNumber = box.read('phoneNumber');
@@ -171,15 +198,16 @@ class AppController extends GetxController {
       await FirebaseFirestore.instance
           .collection('Users')
           .doc(userNumber)
-          .update({'payment': 'pending'});
+          .update({'payment': 'pending', 'endTime': Timestamp.fromDate(DateTime.now().add(Duration(days: endTime)))});
       await FirebaseFirestore.instance
           .collection("Transactions")
-          .doc(userNumber)
+          .doc()
           .set({
         'user': userNumber,
         'package': package,
         'payMob': payMob,
         'payId': payId,
+        'payBy': payBy,
         'payTime': Timestamp.now(),
         'endTime': Timestamp.fromDate(DateTime.now().add(Duration(days: endTime)))
       });
@@ -195,25 +223,50 @@ class AppController extends GetxController {
   }
 
   /// Listens for changes in Firestore for the endTime
-   listenForEndTime() {
+  //  listenForEndTime() {
+  //   var userNumber = box.read('phoneNumber');
+  //   try {
+  //     FirebaseFirestore.instance
+  //         .collection("Transactions")
+  //         .doc()
+  //         .snapshots()
+  //         .listen((snapshot) {
+  //       if (snapshot.exists) {
+  //         Timestamp? endTime = snapshot.data()?['endTime'];
+  //         if (endTime != null) {
+  //           checkEndTime(endTime);
+  //         }
+  //       }
+  //     });
+  //   } catch (e) {
+  //     // TODO
+  //   }
+  // }
+
+  listenForEndTime() {
     var userNumber = box.read('phoneNumber');
     try {
       FirebaseFirestore.instance
           .collection("Transactions")
-          .doc(userNumber)
+          .where('user', isEqualTo: userNumber) // Match userNumber with user data in Transactions
+          .limit(1) // Assuming only one document per user, limit to 1 result
           .snapshots()
           .listen((snapshot) {
-        if (snapshot.exists) {
-          Timestamp? endTime = snapshot.data()?['endTime'];
+        if (snapshot.docs.isNotEmpty) {
+          Map<String, dynamic>? data =
+          snapshot.docs.first.data() as Map<String, dynamic>?;
+          Timestamp? endTime = data?['endTime'];
           if (endTime != null) {
             checkEndTime(endTime);
           }
         }
       });
     } catch (e) {
-      // TODO
+      // Log the error to the console for debugging
+      print("Error in listenForEndTime: \$e");
     }
   }
+
 
   /// Check if the current time matches or surpasses the endTime
    checkEndTime(Timestamp endTime) async {
@@ -231,20 +284,50 @@ class AppController extends GetxController {
   }
 
   /// Periodic check every minute as a fallback
-   startPeriodicCheck() {
+  //  startPeriodicCheck() {
+  //   try {
+  //     ever(paymentValue, (value) {
+  //       if (value == 'paid') {
+  //         Timer.periodic(const Duration(minutes: 1), (timer) async {
+  //           var userNumber = box.read('phoneNumber');
+  //           DocumentSnapshot snapshot = await FirebaseFirestore.instance
+  //               .collection("Transactions")
+  //               .doc(userNumber)
+  //               .get();
+  //
+  //           if (snapshot.exists) {
+  //             Map<String, dynamic>? data =
+  //                 snapshot.data() as Map<String, dynamic>?;
+  //             Timestamp? endTime = data?['endTime'];
+  //             if (endTime != null) {
+  //               checkEndTime(endTime);
+  //             }
+  //           }
+  //         });
+  //       }
+  //     });
+  //   } catch(e) { // TODO
+  //      }
+  // }
+
+  /// Periodic check every minute as a fallback
+  startPeriodicCheck() {
     try {
       ever(paymentValue, (value) {
         if (value == 'paid') {
           Timer.periodic(const Duration(minutes: 1), (timer) async {
             var userNumber = box.read('phoneNumber');
-            DocumentSnapshot snapshot = await FirebaseFirestore.instance
+
+            // Query to find a transaction document that matches the userNumber
+            QuerySnapshot snapshot = await FirebaseFirestore.instance
                 .collection("Transactions")
-                .doc(userNumber)
+                .where('user', isEqualTo: userNumber) // Match userNumber with user data in Transactions
+                .limit(1) // Assuming only one document per user, limit to 1 result
                 .get();
 
-            if (snapshot.exists) {
+            if (snapshot.docs.isNotEmpty) {
               Map<String, dynamic>? data =
-                  snapshot.data() as Map<String, dynamic>?;
+              snapshot.docs.first.data() as Map<String, dynamic>?;
               Timestamp? endTime = data?['endTime'];
               if (endTime != null) {
                 checkEndTime(endTime);
@@ -253,9 +336,12 @@ class AppController extends GetxController {
           });
         }
       });
-    } catch(e) { // TODO
-       }
+    } catch (e) {
+      // Log the error to the console for debugging
+      print("Error in startPeriodicCheck: \$e");
+    }
   }
+
 
 
   /// Update the payment status to "active" in Firestore
@@ -421,6 +507,7 @@ class AppController extends GetxController {
     await fetchData();
     await fetchSlider();
     await headersData();
+    await fetchPaymentOption();
 
     super.onInit();
   }

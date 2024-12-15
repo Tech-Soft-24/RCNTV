@@ -25,44 +25,55 @@ class PlayScreen extends StatelessWidget {
         ()=> Scaffold(
           backgroundColor: AppColor.black,
           appBar: controller.fullscreen.value ? null : customAppbar(() { Get.back(); }, title),
-          body: YoYoPlayer(
-              aspectRatio: 16 / 9,
-              url: url=='' ? "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" : url,
-              autoPlayVideoAfterInit: true,
-              displayFullScreenAfterInit: false,
-              headers: controller.headers[0],
-              videoStyle: const VideoStyle(
-                enableSystemOrientationsOverride: false,
-                qualityStyle: TextStyle(
-                  fontSize: 16.0,
-                  fontWeight: FontWeight.w500,
-                  color: Colors.white,
-                ),
-                progressIndicatorColors: VideoProgressColors(playedColor: AppColor.pink,bufferedColor: AppColor.grey,backgroundColor: AppColor.white),
-                forwardAndBackwardBtSize: 30.0,
-                playButtonIconSize: 40.0,
-                playIcon: Icon(
-                  Icons.play_circle_outline,
-                  size: 40.0, color: AppColor.grey,
-                ),
-                pauseIcon: Icon(
-                  Icons.pause_circle_outline,
-                  size: 40.0, color: AppColor.grey,
-                ),
+          body: SizedBox(
+            width: Get.width,
+            height: Get.height,
+            child: FittedBox(
+              fit: BoxFit.contain,
+              child: SizedBox(
+                width: Get.width,
+                height: Get.height,
+                child: YoYoPlayer(
+                    aspectRatio: controller.fullscreen.value ? MediaQuery.of(context).size.aspectRatio : 16 / 9,
+                    url: url=='' ? "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" : url,
+                    autoPlayVideoAfterInit: true,
+                    displayFullScreenAfterInit: false,
+                    headers: controller.headers[0],
+                    videoStyle:  const VideoStyle(
+                      enableSystemOrientationsOverride: false,
+                      qualityStyle: TextStyle(
+                        fontSize: 16.0,
+                        fontWeight: FontWeight.w500,
+                        color: Colors.white,
+                      ),
+                      progressIndicatorColors: VideoProgressColors(playedColor: AppColor.pink,bufferedColor: AppColor.grey,backgroundColor: AppColor.white),
+                      forwardAndBackwardBtSize: 30.0,
+                      playButtonIconSize: 40.0,
+                      playIcon: Icon(
+                        Icons.play_circle_outline,
+                        size: 40.0, color: AppColor.grey,
+                      ),
+                      pauseIcon: Icon(
+                        Icons.pause_circle_outline,
+                        size: 40.0, color: AppColor.grey,
+                      ),
 
-                //videoQualityPadding: EdgeInsets.all(5.0),
-              ),
-              videoLoadingStyle: const VideoLoadingStyle(
-                loading: Center(
-                  child: Text("Loading video"),
+                      //videoQualityPadding: EdgeInsets.all(5.0),
+                    ),
+                    videoLoadingStyle: const VideoLoadingStyle(
+                      loading: Center(
+                        child: Text("Loading video"),
+                      ),
+                    ),
+
+                    allowCacheFile: true,
+                    onFullScreen: (value) {
+                      controller.fullscreen.value = value;
+                      print(MediaQuery.of(context).size.aspectRatio);
+                    }
                 ),
               ),
-
-              allowCacheFile: true,
-              onFullScreen: (value) {
-                controller.fullscreen.value = value;
-                print(controller.fullscreen.value);
-              }
+            ),
           ),
         ),
       );

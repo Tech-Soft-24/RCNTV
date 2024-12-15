@@ -30,7 +30,41 @@ class PaymentPage extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20.0),
                 child: Column(
                   children: [
-                    80.verticalSpace,
+                    20.verticalSpace,
+                    const Align(
+                      alignment: Alignment.centerLeft,
+                      child: Text('পেমেন্ট নির্দেশাবলী',style: TextStyle(
+                          color: AppColor.grey,
+                          fontWeight: FontWeight.w500,
+                          fontSize: 24),),
+                    ),
+                    Divider(height: 20,color: AppColor.grey.withOpacity(0.5),thickness: 1.0,),
+                    SizedBox(
+                    //  padding: EdgeInsets.symmetric(horizontal: 20),
+                      width: Get.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text('১. পেমেন্ট পদ্ধতি : ',style: AppTextStyle.grey18w500,),
+                          Text('পেমেন্ট করতে প্রথমে ( ${controller.paymentOption[controller.selectIndex.value]['payNum']} ) এই নম্বরে সেন্ড মানি করুন। (যেমন বিকাশ, নগদ, রকেট ইত্যাদি)', style: AppTextStyle.grey16w500,),
+                          10.verticalSpace,
+                          const Text('২. ফর্মটি পূরণ করুন ',style: AppTextStyle.grey18w500,),
+                          const Text('আপনার পেমেন্ট সম্পন্ন হলে,যে নম্বর থেকে পেমেন্ট করেছেন, সেই নম্বরটি লিখুন।', style: AppTextStyle.grey16w500,),
+                          const Text('আপনি যে ট্রানজেকশন আইডি পেয়েছেন, সেটি লিখুন।', style: AppTextStyle.grey16w500,),
+                          const Text('"পেমেন্ট অপশন" ড্রপডাউন মেনু থেকে আপনার পেমেন্ট পদ্ধতি (যেমন বিকাশ, নগদ, রকেট ইত্যাদি) নির্বাচন করুন।', style: AppTextStyle.grey16w500,),
+                          10.verticalSpace,
+                          const Text('৩. পেমেন্ট নিশ্চিত করুন',style: AppTextStyle.grey18w500,),
+                          const Text('ফর্মটি সঠিকভাবে পূরণ করার পরে "পে নাউ" (Pay Now) বোতামে ক্লিক করুন।', style: AppTextStyle.grey16w500,),
+                          Divider(height: 30,color: AppColor.grey.withOpacity(0.5),thickness: 1.0,),
+                          const Text('সঠিক তথ্য প্রদান করা হলে, আপনার পেমেন্ট নিশ্চিত হবে এবং আপনার প্যাকেজটি সক্রিয় করা হবে।',textAlign: TextAlign.center, style: AppTextStyle.grey16w500,),
+                           Text('যদি আপনার কোনো সমস্যা হয়, অনুগ্রহ করে আমাদের সহায়তা (${controller.paymentOption[controller.selectIndex.value]['helpNum']}) কেন্দ্রের সাথে যোগাযোগ করুন।',textAlign: TextAlign.center, style: AppTextStyle.grey16w500,),
+
+
+
+                        ],
+                      ),
+                    ),
+                    30.verticalSpace,
                     const Align(
                         alignment: Alignment.centerLeft,
                         child: Text(
@@ -50,16 +84,6 @@ class PaymentPage extends StatelessWidget {
                       hintText: 'Mobile Number',
                     ),
                     16.verticalSpace,
-                    CustomTextField(
-                      textController: controller.amountController..text=price!,
-                      hintText: 'Amount',
-                    ),
-                    16.verticalSpace,
-                    CustomTextField(
-                      textController: controller.transactionController,
-                      hintText: 'Transaction ID',
-                    ),
-                    16.verticalSpace,
                     Container(
                       height: ScreenUtil().setHeight(52),
                       padding: const EdgeInsets.symmetric(horizontal: 14),
@@ -70,10 +94,10 @@ class PaymentPage extends StatelessWidget {
                       ),
                       child: DropdownButtonHideUnderline(
                         child: Obx(
-                          () => DropdownButton<String>(
+                              () => DropdownButton<String>(
                             hint: const Text(
-                              'Payment Options',
-                              style: AppTextStyle.grey18w500
+                                'Payment Options',
+                                style: AppTextStyle.grey18w500
                             ),
                             // menuWidth: Get.width - 40,
                             dropdownColor: AppColor.white.withOpacity(0.9),
@@ -107,6 +131,18 @@ class PaymentPage extends StatelessWidget {
                         ),
                       ),
                     ),
+                    16.verticalSpace,
+                    CustomTextField(
+                      textController: controller.transactionController,
+                      hintText: 'Transaction ID',
+                    ),
+                    16.verticalSpace,
+                    CustomTextField(
+                      textController: controller.amountController..text=price!,
+                      hintText: 'Amount',
+                    ),
+
+
                     24.verticalSpace,
                     Align(
                       alignment: Alignment.bottomCenter,
@@ -121,13 +157,14 @@ class PaymentPage extends StatelessWidget {
                              } else {
                                 endTime = 365;
                              }
-                            controller.paymentOk(payMob: controller.mobileController.text, payId: controller.transactionController.text, package: controller.amountController.text, endTime : endTime);
+                            controller.paymentOk(payMob: controller.mobileController.text, payId: controller.transactionController.text, package: controller.amountController.text, endTime : endTime, payBy: controller.selectedLang.value);
                           }
                           //Get.off(const ChannelScreen());
                           },
                           title: 'Pay Now',
                           gradient: AppColor.gradient,),
-                    )
+                    ),
+                    100.verticalSpace
                   ],
                 ),
               ),

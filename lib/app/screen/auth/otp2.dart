@@ -326,7 +326,8 @@ class FirebaseServices {
       "address": "unknown",
       "deviceToken": deviceToken,
       'active': true,
-      'payment': 'active'
+      'payment': 'active',
+      'endTime': Timestamp.now(),
     });
   }
 
