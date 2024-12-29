@@ -1,15 +1,16 @@
 {
   "project_info": {
     "project_number": "878669379625",
+    "firebase_url": "https://rcn-live-tv-default-rtdb.asia-southeast1.firebasedatabase.app",
     "project_id": "rcn-live-tv",
     "storage_bucket": "rcn-live-tv.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:878669379625:android:ca77dce10ad0c28ff78438",
+        "mobilesdk_app_id": "1:878669379625:android:880f9d891fbbb6d7f78438",
         "android_client_info": {
-          "package_name": "com.example.livetv2024"
+          "package_name": "com.rcntv.mobile"
         }
       },
       "oauth_client": [],

@@ -13,6 +13,7 @@ import 'package:livetv2024/app/screen/splash_screen.dart';
 import 'package:livetv2024/app/screen/subscribe/subscribe_page.dart';
 import 'package:livetv2024/app/widgets/snackbar.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 
 class AppController extends GetxController {
@@ -75,10 +76,13 @@ class AppController extends GetxController {
   RxList imageCarousal = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> users = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> paymentOption = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> homeLinks = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> catList = <Map<String, dynamic>>[].obs;
 
 
   RxInt selectedIndex = 0.obs;
-  List catList = ['All', 'News', 'Sports', 'Kids', 'Entertainment', 'Movie'];
+  RxBool allChanne = true.obs;
+//  List catList = ['All', 'News', 'Sports', 'Kids', 'Entertainment', 'Movie'];
 
   RxBool news = false.obs;
   RxBool sports = false.obs;
@@ -106,6 +110,26 @@ class AppController extends GetxController {
             'img': element['img'],
             'url': element['url'],
             'cat': element['cat'],
+            'document_id': element.id,
+          });
+        });
+      });
+    } catch (e) {
+      // TODO
+    }
+  }
+  fetchCategory() async {
+    catList.clear();
+    try {
+      await FirebaseFirestore.instance
+          .collection('catList')
+          .orderBy('name')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          catList.add({
+            'cat': element['cat'],
+            'name': element['name'],
             'document_id': element.id,
           });
         });
@@ -153,6 +177,31 @@ class AppController extends GetxController {
         });
       });
     } catch (e) {
+      // TODO
+    }
+  }
+
+
+  fetchHomeLinks() async {
+    homeLinks.clear();
+    try {
+      await FirebaseFirestore.instance
+          .collection('homeLink')
+          .get()
+          .then((QuerySnapshot querySnapshot) {
+        querySnapshot.docs.forEach((element) {
+          homeLinks.add({
+            'rcnTv': element['rcnTv'],
+            'rcnipTv': element['rcnipTv'],
+            'rcntvLive': element['rcntvLive'],
+            'rcnWebsite': element['rcnWebsite'],
+            'document_id': element.id,
+          });
+        });
+      });
+      print(homeLinks.toString());
+    } catch (e) {
+      print(e);
       // TODO
     }
   }
@@ -375,10 +424,11 @@ class AppController extends GetxController {
     if (paymentValue.value == 'active') {
       print(paymentValue.value);
     } else if (paymentValue.value == 'pending') {
-      Future.delayed(
-          const Duration(seconds: 5),
-          () => CustomSnackBar.showSnackBar(
-              title: 'Payment Pending', message: 'Refresh This Page'));
+      print(paymentValue.value);
+      // Future.delayed(
+      //     const Duration(seconds: 5),
+      //     () => CustomSnackBar.showSnackBar(
+      //         title: 'Payment Pending', message: 'Refresh This Page'));
     } else if (paymentValue.value == 'paid') {
       Future.delayed(
           const Duration(seconds: 5),
@@ -406,6 +456,12 @@ class AppController extends GetxController {
 
   toggleFullscreen(bool value) {
     fullscreen.value = value;
+  }
+
+  openUrl({required String url}) async{
+
+    await launchUrl(Uri.parse(url), mode: LaunchMode.platformDefault);
+
   }
 
   headersData() async {
@@ -504,6 +560,8 @@ class AppController extends GetxController {
     await getUser();
     await getTransactions();
     await paymentPaidAlert();
+    await fetchHomeLinks();
+    await fetchCategory();
     await fetchData();
     await fetchSlider();
     await headersData();
