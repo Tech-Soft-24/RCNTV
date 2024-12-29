@@ -18,6 +18,7 @@ class ChannelScreen extends StatelessWidget {
         init: AppController(),
         builder: (controller){
 
+          List filterChannels = controller.channel.where((channel) => channel['cat'] == controller.catList[controller.selectedIndex.value]['cat']).toList();
           List newsChannels = controller.channel.where((channel) => channel['cat'] == 'news').toList();
           List kidsChannels = controller.channel.where((channel) => channel['cat'] == 'kids').toList();
           List entChannels = controller.channel.where((channel) => channel['cat'] == 'entertainment').toList();
@@ -56,7 +57,7 @@ class ChannelScreen extends StatelessWidget {
                                   borderRadius: BorderRadius.circular(50),
                                   color: controller.selectedIndex.value == index ? AppColor.pink :AppColor.purple.withOpacity(0.2)
                               ),
-                              child: Center(child: Text(controller.catList[index],style: controller.selectedIndex.value == index ? AppTextStyle.white14w600 : AppTextStyle.purple14w600)),
+                              child: Center(child: Text(controller.catList[index]['name'],style: controller.selectedIndex.value == index ? AppTextStyle.white14w600 : AppTextStyle.purple14w600)),
                             ),
                           ),
                         ),
@@ -122,7 +123,7 @@ class ChannelScreen extends StatelessWidget {
             ),
             Obx(
           ()=> Visibility(
-                visible: controller.selectedIndex.value==1,
+                visible: controller.selectedIndex.value !=0 ,
                 child: Expanded(
                   child: GridView.builder(
                       padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
@@ -133,9 +134,9 @@ class ChannelScreen extends StatelessWidget {
                         crossAxisSpacing: 10,
                         childAspectRatio: 0.6,
                       ),
-                      itemCount: newsChannels.length,
+                      itemCount: filterChannels.length,
                       itemBuilder: (_, index) {
-                        var channels = newsChannels[index];
+                        var channels = filterChannels[index];
 
                         print(channels);
                         return InkWell(
@@ -176,226 +177,226 @@ class ChannelScreen extends StatelessWidget {
                 ),
               ),
             ),
-            Obx(
-          ()=> Visibility(
-                visible: controller.selectedIndex.value==2,
-                child: Expanded(
-                  child: GridView.builder(
-                      padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.6,
-                      ),
-                      itemCount: sportsChannels.length,
-                      itemBuilder: (_, index) {
-                        var channels = sportsChannels[index];
-
-                        print(channels);
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: (){
-                            Get.to(PlayScreen(title: channels['title'], url: channels['url']));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
-
-                            decoration: BoxDecoration(
-                                color: AppColor.black.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [Container(
-                                height: 80,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    color: AppColor.white,
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
-                                ),
-                              ),
-                                10.verticalSpace,
-                                SizedBox(
-                                  width: 100,
-                                  child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                ),
-              ),
-            ),
-            Obx(
-          ()=> Visibility(
-                visible: controller.selectedIndex.value==3,
-                child: Expanded(
-                  child: GridView.builder(
-                      padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.6,
-                      ),
-                      itemCount: kidsChannels.length,
-                      itemBuilder: (_, index) {
-                        var channels = kidsChannels[index];
-
-                        print(channels);
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: (){
-                            Get.to(PlayScreen(title: channels['title'], url: channels['url']));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
-
-                            decoration: BoxDecoration(
-                                color: AppColor.black.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [Container(
-                                height: 80,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    color: AppColor.white,
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
-                                ),
-                              ),
-                                10.verticalSpace,
-                                SizedBox(
-                                  width: 100,
-                                  child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                ),
-              ),
-            ),
-            Obx(
-          ()=> Visibility(
-                visible: controller.selectedIndex.value==4,
-                child: Expanded(
-                  child: GridView.builder(
-                      padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.6,
-                      ),
-                      itemCount: entChannels.length,
-                      itemBuilder: (_, index) {
-                        var channels = entChannels[index];
-
-                        print(channels);
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: (){
-                            Get.to(PlayScreen(title: channels['title'], url: channels['url']));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
-
-                            decoration: BoxDecoration(
-                                color: AppColor.black.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [Container(
-                                height: 80,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    color: AppColor.white,
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
-                                ),
-                              ),
-                                10.verticalSpace,
-                                SizedBox(
-                                  width: 100,
-                                  child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                ),
-              ),
-            ),
-            Obx(
-          ()=> Visibility(
-                visible: controller.selectedIndex.value==5,
-                child: Expanded(
-                  child: GridView.builder(
-                      padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
-                      physics: const BouncingScrollPhysics(),
-                      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 3,
-                        mainAxisSpacing: 10,
-                        crossAxisSpacing: 10,
-                        childAspectRatio: 0.6,
-                      ),
-                      itemCount: movieChannels.length,
-                      itemBuilder: (_, index) {
-                        var channels = movieChannels[index];
-
-                        print(channels);
-                        return InkWell(
-                          borderRadius: BorderRadius.circular(8),
-                          onTap: (){
-                            Get.to(PlayScreen(title: channels['title'], url: channels['url']));
-                          },
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
-
-                            decoration: BoxDecoration(
-                                color: AppColor.black.withOpacity(0.1),
-                                borderRadius: BorderRadius.circular(8)
-                            ),
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [Container(
-                                height: 80,
-                                width: 80,
-                                decoration: BoxDecoration(
-                                    color: AppColor.white,
-                                    shape: BoxShape.circle,
-                                    image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
-                                ),
-                              ),
-                                10.verticalSpace,
-                                SizedBox(
-                                  width: 100,
-                                  child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
-                                )
-                              ],
-                            ),
-                          ),
-                        );
-                      }),
-                ),
-              ),
-            ),
+          //   Obx(
+          // ()=> Visibility(
+          //       visible: controller.selectedIndex.value==2,
+          //       child: Expanded(
+          //         child: GridView.builder(
+          //             padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
+          //             physics: const BouncingScrollPhysics(),
+          //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //               crossAxisCount: 3,
+          //               mainAxisSpacing: 10,
+          //               crossAxisSpacing: 10,
+          //               childAspectRatio: 0.6,
+          //             ),
+          //             itemCount: sportsChannels.length,
+          //             itemBuilder: (_, index) {
+          //               var channels = sportsChannels[index];
+          //
+          //               print(channels);
+          //               return InkWell(
+          //                 borderRadius: BorderRadius.circular(8),
+          //                 onTap: (){
+          //                   Get.to(PlayScreen(title: channels['title'], url: channels['url']));
+          //                 },
+          //                 child: Container(
+          //                   padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+          //
+          //                   decoration: BoxDecoration(
+          //                       color: AppColor.black.withOpacity(0.1),
+          //                       borderRadius: BorderRadius.circular(8)
+          //                   ),
+          //                   child: Column(
+          //                     mainAxisAlignment: MainAxisAlignment.center,
+          //                     crossAxisAlignment: CrossAxisAlignment.center,
+          //                     children: [Container(
+          //                       height: 80,
+          //                       width: 80,
+          //                       decoration: BoxDecoration(
+          //                           color: AppColor.white,
+          //                           shape: BoxShape.circle,
+          //                           image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
+          //                       ),
+          //                     ),
+          //                       10.verticalSpace,
+          //                       SizedBox(
+          //                         width: 100,
+          //                         child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
+          //                       )
+          //                     ],
+          //                   ),
+          //                 ),
+          //               );
+          //             }),
+          //       ),
+          //     ),
+          //   ),
+          //   Obx(
+          // ()=> Visibility(
+          //       visible: controller.selectedIndex.value==3,
+          //       child: Expanded(
+          //         child: GridView.builder(
+          //             padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
+          //             physics: const BouncingScrollPhysics(),
+          //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //               crossAxisCount: 3,
+          //               mainAxisSpacing: 10,
+          //               crossAxisSpacing: 10,
+          //               childAspectRatio: 0.6,
+          //             ),
+          //             itemCount: kidsChannels.length,
+          //             itemBuilder: (_, index) {
+          //               var channels = kidsChannels[index];
+          //
+          //               print(channels);
+          //               return InkWell(
+          //                 borderRadius: BorderRadius.circular(8),
+          //                 onTap: (){
+          //                   Get.to(PlayScreen(title: channels['title'], url: channels['url']));
+          //                 },
+          //                 child: Container(
+          //                   padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+          //
+          //                   decoration: BoxDecoration(
+          //                       color: AppColor.black.withOpacity(0.1),
+          //                       borderRadius: BorderRadius.circular(8)
+          //                   ),
+          //                   child: Column(
+          //                     mainAxisAlignment: MainAxisAlignment.center,
+          //                     crossAxisAlignment: CrossAxisAlignment.center,
+          //                     children: [Container(
+          //                       height: 80,
+          //                       width: 80,
+          //                       decoration: BoxDecoration(
+          //                           color: AppColor.white,
+          //                           shape: BoxShape.circle,
+          //                           image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
+          //                       ),
+          //                     ),
+          //                       10.verticalSpace,
+          //                       SizedBox(
+          //                         width: 100,
+          //                         child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
+          //                       )
+          //                     ],
+          //                   ),
+          //                 ),
+          //               );
+          //             }),
+          //       ),
+          //     ),
+          //   ),
+          //   Obx(
+          // ()=> Visibility(
+          //       visible: controller.selectedIndex.value==4,
+          //       child: Expanded(
+          //         child: GridView.builder(
+          //             padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
+          //             physics: const BouncingScrollPhysics(),
+          //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //               crossAxisCount: 3,
+          //               mainAxisSpacing: 10,
+          //               crossAxisSpacing: 10,
+          //               childAspectRatio: 0.6,
+          //             ),
+          //             itemCount: entChannels.length,
+          //             itemBuilder: (_, index) {
+          //               var channels = entChannels[index];
+          //
+          //               print(channels);
+          //               return InkWell(
+          //                 borderRadius: BorderRadius.circular(8),
+          //                 onTap: (){
+          //                   Get.to(PlayScreen(title: channels['title'], url: channels['url']));
+          //                 },
+          //                 child: Container(
+          //                   padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+          //
+          //                   decoration: BoxDecoration(
+          //                       color: AppColor.black.withOpacity(0.1),
+          //                       borderRadius: BorderRadius.circular(8)
+          //                   ),
+          //                   child: Column(
+          //                     mainAxisAlignment: MainAxisAlignment.center,
+          //                     crossAxisAlignment: CrossAxisAlignment.center,
+          //                     children: [Container(
+          //                       height: 80,
+          //                       width: 80,
+          //                       decoration: BoxDecoration(
+          //                           color: AppColor.white,
+          //                           shape: BoxShape.circle,
+          //                           image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
+          //                       ),
+          //                     ),
+          //                       10.verticalSpace,
+          //                       SizedBox(
+          //                         width: 100,
+          //                         child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
+          //                       )
+          //                     ],
+          //                   ),
+          //                 ),
+          //               );
+          //             }),
+          //       ),
+          //     ),
+          //   ),
+          //   Obx(
+          // ()=> Visibility(
+          //       visible: controller.selectedIndex.value==5,
+          //       child: Expanded(
+          //         child: GridView.builder(
+          //             padding: const EdgeInsets.only(left: 16,top: 20, right: 16),
+          //             physics: const BouncingScrollPhysics(),
+          //             gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+          //               crossAxisCount: 3,
+          //               mainAxisSpacing: 10,
+          //               crossAxisSpacing: 10,
+          //               childAspectRatio: 0.6,
+          //             ),
+          //             itemCount: movieChannels.length,
+          //             itemBuilder: (_, index) {
+          //               var channels = movieChannels[index];
+          //
+          //               print(channels);
+          //               return InkWell(
+          //                 borderRadius: BorderRadius.circular(8),
+          //                 onTap: (){
+          //                   Get.to(PlayScreen(title: channels['title'], url: channels['url']));
+          //                 },
+          //                 child: Container(
+          //                   padding: const EdgeInsets.symmetric(vertical: 12,horizontal: 16),
+          //
+          //                   decoration: BoxDecoration(
+          //                       color: AppColor.black.withOpacity(0.1),
+          //                       borderRadius: BorderRadius.circular(8)
+          //                   ),
+          //                   child: Column(
+          //                     mainAxisAlignment: MainAxisAlignment.center,
+          //                     crossAxisAlignment: CrossAxisAlignment.center,
+          //                     children: [Container(
+          //                       height: 80,
+          //                       width: 80,
+          //                       decoration: BoxDecoration(
+          //                           color: AppColor.white,
+          //                           shape: BoxShape.circle,
+          //                           image: DecorationImage(image: NetworkImage(channels['img']),fit: BoxFit.cover)
+          //                       ),
+          //                     ),
+          //                       10.verticalSpace,
+          //                       SizedBox(
+          //                         width: 100,
+          //                         child: Text(channels['title'],textAlign: TextAlign.center, overflow: TextOverflow.ellipsis, maxLines: 3, style: AppTextStyle.purple14w500),
+          //                       )
+          //                     ],
+          //                   ),
+          //                 ),
+          //               );
+          //             }),
+          //       ),
+          //     ),
+          //   ),
           ],
         ),
       );

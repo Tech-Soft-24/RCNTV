@@ -283,7 +283,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
   }
 
   Future<String?> sendOtp(String phoneNumber) async {
-    String apiKey = '178438612649861920231205025339am5pks6rmx';
+    String apiKey = '115402006251734789985339db4975fe9c1245c4aad4e067ce080';
     String emailId = 'belalhoshan89@gmail.com';
     String senderId = '227';
     String apiUrl = 'https://24bulksms.com/24bulksms/api/otp-api-sms-send';
@@ -300,7 +300,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     http.Response response = await http.post(Uri.parse(apiUrl), body: data);
     if (response.statusCode == 200) {
       CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP send successfully');
-      Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+    //  Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       print(otp);
       return otp;
     } else {

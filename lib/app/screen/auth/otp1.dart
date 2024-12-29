@@ -251,7 +251,7 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
 
   Future<String?> sendOtp(String phoneNumber) async {
     // Replace these values with your actual API key, email ID, and sender ID
-    String apiKey = '178438612649861920231205025339am5pks6rmx';
+    String apiKey = '115402006251734789985339db4975fe9c1245c4aad4e067ce080';
     String emailId = 'belalhoshan89@gmail.com';
     String senderId = '227';
     // API endpoint
@@ -280,7 +280,7 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
 
     if (response.statusCode == 200) {
       CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP sent successfully');
-      Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+    //  Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       // You may want to store the OTP and other relevant data for verification
       print(otp);
       return otp;
@@ -300,3 +300,4 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
     return ((1000 + DateTime.now().microsecondsSinceEpoch % 9000)).toString();
   }
 }
+

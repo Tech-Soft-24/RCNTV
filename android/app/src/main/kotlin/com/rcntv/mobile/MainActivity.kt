@@ -1,4 +1,4 @@
-package com.example.livetv2024
+package com.rcntv.mobile
 
 import io.flutter.embedding.android.FlutterActivity
 

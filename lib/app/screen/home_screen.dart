@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:livetv2024/app/constant/text.dart';
 import 'package:livetv2024/app/widgets/button.dart';
 import 'package:livetv2024/bcodez/app_controller.dart';
+import 'package:url_launcher/url_launcher.dart';
 import '../constant/color.dart';
 import '../widgets/home_container.dart';
 
@@ -13,6 +14,9 @@ class HomeScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+
+
     return GetX<AppController>(
         init: AppController(),
         builder: (controller){return Scaffold(
@@ -139,7 +143,7 @@ class HomeScreen extends StatelessWidget {
                       ) : BoxDecoration(
                         image: DecorationImage(
                           image: NetworkImage(image["img-path"]),
-                          fit: BoxFit.cover,
+                          fit: BoxFit.fill,
                         ),
                         borderRadius: BorderRadius.circular(
                             16), // Adjust the radius as needed
@@ -206,25 +210,27 @@ class HomeScreen extends StatelessWidget {
                 ),
                 16.verticalSpace,
                 HomeContainer(
-                  onTap: () {},
+                  onTap: () {controller.openUrl(url: controller.homeLinks[0]['rcnTv']);
+                    print(controller.homeLinks[0]['rcnTv']);
+                    },
                   title: 'RCN TV',
                   gradient: AppColor.gradient,
                 ),
                 16.verticalSpace,
                 HomeContainer(
-                  onTap: () {},
+                  onTap: () {controller.openUrl(url: controller.homeLinks[0]['rcnipTv']);},
                   title: 'RCN IP TV',
                   gradient: AppColor.gradient,
                 ),
                 16.verticalSpace,
                 HomeContainer(
-                  onTap: () {},
+                  onTap: () {controller.openUrl(url: controller.homeLinks[0]['rcntvLive']);},
                   title: 'RCN TV Live',
                   gradient: AppColor.gradient,
                 ),
                 16.verticalSpace,
                 HomeContainer(
-                  onTap: () {},
+                  onTap: () {launchUrl(Uri.parse('${controller.homeLinks[0]['rcnWebsite']}'), mode: LaunchMode.platformDefault);},
                   title: 'RCN Website',
                   gradient: AppColor.gradient,
                 ),
