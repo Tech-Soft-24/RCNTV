@@ -300,7 +300,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     http.Response response = await http.post(Uri.parse(apiUrl), body: data);
     if (response.statusCode == 200) {
       CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP send successfully');
-    //  Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+      Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       print(otp);
       return otp;
     } else {
@@ -327,9 +327,11 @@ class FirebaseServices {
       "deviceToken": deviceToken,
       'active': true,
       'payment': 'active',
+      'package': 'none',
       'endTime': Timestamp.now(),
     });
   }
+
 
   static Future<QuerySnapshot<Map<String, dynamic>>> getUser(String phoneNumber) async {
     return await FirebaseFirestore.instance.collection('Users').where(

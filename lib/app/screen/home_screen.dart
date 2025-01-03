@@ -50,8 +50,8 @@ class HomeScreen extends StatelessWidget {
                           color: AppColor.white, borderRadius: BorderRadius.circular(20)),
                       child: Column(
                         children: [
-                          const Text(
-                            'You are Enjoying Premium Package',
+                           Text(
+                            'You are Enjoying ${controller.users[0]['package']} Package',
                             textAlign: TextAlign.center,
                             softWrap: true,
                             style: AppTextStyle.purple16w500,
@@ -61,6 +61,14 @@ class HomeScreen extends StatelessWidget {
                               width: 245,
                               child: Text(
                                 'Are you sure you want to Logout?',
+                                textAlign: TextAlign.center,
+                                softWrap: true,
+                                style: AppTextStyle.grey16w500,
+                              )),
+                           SizedBox(
+                              width: 245,
+                              child: Text(
+                                'Account : ${controller.users[0]['phoneNumber']}',
                                 textAlign: TextAlign.center,
                                 softWrap: true,
                                 style: AppTextStyle.grey16w500,

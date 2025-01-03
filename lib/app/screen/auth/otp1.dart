@@ -280,7 +280,7 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
 
     if (response.statusCode == 200) {
       CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP sent successfully');
-    //  Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+      Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       // You may want to store the OTP and other relevant data for verification
       print(otp);
       return otp;

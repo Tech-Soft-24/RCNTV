@@ -483,6 +483,29 @@ class AppController extends GetxController {
     });
   }
 
+  userData() async {
+    var userNumber = box.read('phoneNumber');
+    users.clear();
+    await FirebaseFirestore.instance
+        .collection('Users')
+        .where('user', isEqualTo: userNumber)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((element) {
+        users.add({
+          'profile_img': element['profile_img'],
+          'name': element['name'],
+          'phoneNumber': element['phoneNumber'],
+          'payment': element['payment'],
+          'address': element['address'],
+          'endTime': element['endTime'],
+          'package': element['package'],
+          'document_id': element.id,
+        });
+      });
+    });
+  }
+
   Future<void> getTransactions() async {
     var userNumber = box.read('phoneNumber');
 
@@ -520,19 +543,12 @@ class AppController extends GetxController {
               .where('phoneNumber', isEqualTo: userNumber)
               .get();
 
-
-      // Clear the headers to avoid duplicates
-      users.clear();
-
-
       if (querySnapshot.docs.isNotEmpty) {
         // Add the payment from the first document only
         final firstDocument = querySnapshot.docs.first;
         box.write('payment', firstDocument['payment']);
         //  box.write('isSubscribe', firstDocument['isSubscribe']);
         paymentValue.value = firstDocument['payment'];
-
-
       }
 
 
@@ -559,7 +575,7 @@ class AppController extends GetxController {
     await startPeriodicCheck();
     await getUser();
     await getTransactions();
-    await paymentPaidAlert();
+//    await paymentPaidAlert();
     await fetchHomeLinks();
     await fetchCategory();
     await fetchData();
