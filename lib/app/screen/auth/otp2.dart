@@ -156,7 +156,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                         Image.asset('assets/images/logo.png',
                             height: 24, width: 98),
                         16.verticalSpace,
-                         const Text('We’ve sent a verification code to your mobile. Enter it to complete the sign-up process.',style: AppTextStyle.grey20w600,),
+                        const Text('We’ve sent a verification code to your mobile. Enter it to complete the sign-up process.',style: AppTextStyle.grey20w600,),
                       ],
                     )),
                 24.verticalSpace,
@@ -221,12 +221,12 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                   gradient: AppColor.gradient,
                   onTap: () {
                     focusNode.unfocus();
-                      if (formKey.currentState!.validate() && pinController.text == widget.generatedOtp) {
-                        _navigateToGDetails();
-                        controller.getUser();
-                        box.write('isLogged', true);
-                        Get.offAll(()=>const HomeScreen());
-                      }},
+                    if (formKey.currentState!.validate() && pinController.text == widget.generatedOtp) {
+                      _navigateToGDetails();
+                      controller.getUser();
+                      box.write('isLogged', true);
+                      Get.offAll(()=>const HomeScreen());
+                    }},
                 ),
 
               ],
@@ -242,13 +242,13 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     final data = await _checkPhoneNumberExists(widget.phoneNumber);
     if (data.isNotEmpty) {
       // Save the data in SharedPreferences
-    //  final SharedPreferences prefs = await SharedPreferences.getInstance();
-    //  prefs.setString('phoneNumber', data['phoneNumber']);
+      //  final SharedPreferences prefs = await SharedPreferences.getInstance();
+      //  prefs.setString('phoneNumber', data['phoneNumber']);
 
 
       //prefs.setString('phoneNumber', data['phoneNumber']).whenComplete(() => getuserNumber(),);
       // log(prefs.getString('phoneNumber').toString());
-    //  Get.put(MainScreenController()).currentIndex(0);
+      //  Get.put(MainScreenController()).currentIndex(0);
 
     } else {
       print('Phone number does not exist in Firestore');
@@ -264,14 +264,14 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       await FirebaseFirestore.instance.collection('Users').doc(phoneNumber).update({'deviceToken': token, 'active': true});
       var data = snapshot.docs.first.data();
       box.write('phoneNumber', data['phoneNumber']);
-    //  print(data.toString());
+      //  print(data.toString());
       return data;
     } else {
       await FirebaseServices.createUser(phoneNumber, token);
       QuerySnapshot<Map<String, dynamic>> snapshot = await FirebaseServices.getUser(phoneNumber);
       var data = snapshot.docs.first.data();
       box.write('phoneNumber', data['phoneNumber']);
-    //  print(data.toString());
+      //  print(data.toString());
       return data;
     }
   }
@@ -297,10 +297,11 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
       'mobile_no': phoneNumber,
       'user_email': emailId,
     };
+
     http.Response response = await http.post(Uri.parse(apiUrl), body: data);
     if (response.statusCode == 200) {
       CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP send successfully');
-      Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+      //  Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       print(otp);
       return otp;
     } else {
@@ -327,11 +328,9 @@ class FirebaseServices {
       "deviceToken": deviceToken,
       'active': true,
       'payment': 'active',
-      'package': 'none',
       'endTime': Timestamp.now(),
     });
   }
-
 
   static Future<QuerySnapshot<Map<String, dynamic>>> getUser(String phoneNumber) async {
     return await FirebaseFirestore.instance.collection('Users').where(

@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'dart:io';
 
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -12,12 +14,12 @@ import '../../constant/text.dart';
 import '../../widgets/button.dart';
 import 'otp2.dart';
 
-
 class SignInOrSignUpWithPhone extends StatefulWidget {
   const SignInOrSignUpWithPhone({super.key});
 
   @override
-  State<SignInOrSignUpWithPhone> createState() => _SignInOrSignUpWithPhoneState();
+  State<SignInOrSignUpWithPhone> createState() =>
+      _SignInOrSignUpWithPhoneState();
 }
 
 class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
@@ -43,11 +45,14 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
                       Image.asset('assets/images/logo.png',
                           height: 24, width: 98),
                       16.verticalSpace,
-                      const Text('Enter Your Mobile Number to Login',style: AppTextStyle.grey20w600,),
+                      const Text(
+                        'Enter Your Mobile Number to Login',
+                        style: AppTextStyle.grey20w600,
+                      ),
                     ],
                   )),
               24.verticalSpace,
-              Text(
+              const Text(
                 "We will send you a verification code!",
                 style: AppTextStyle.purple16w500,
                 textAlign: TextAlign.center,
@@ -56,11 +61,12 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
               Container(
                 height: 55,
                 decoration: BoxDecoration(
-                    border: Border.all(width: 1, color: AppColor.pink), borderRadius: BorderRadius.circular(25)),
+                    border: Border.all(width: 1, color: AppColor.pink),
+                    borderRadius: BorderRadius.circular(25)),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                   15.horizontalSpace,
+                    15.horizontalSpace,
                     const Text(
                       "+88",
                       style: AppTextStyle.purple16w500,
@@ -106,7 +112,7 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
                       children: [
                         TextSpan(
                           text: 'Terms of Use',
-                          style:  AppTextStyle.purple14w600,
+                          style: AppTextStyle.purple14w600,
                           recognizer: TapGestureRecognizer()
                             ..onTap = () {
                               // Navigate to Terms of Use page
@@ -148,10 +154,9 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
                         isSendingOTP = true;
                       });
                     }
-
                     // Send OTP
-                    String? generatedOtp = await sendOtp(phoneNumber);
-
+                    String? generatedOtp = await sendSms(to: phoneNumber);
+                    debugPrint("OTP: $generatedOtp");
                     if (mounted) {
                       setState(() {
                         isSendingOTP = false;
@@ -162,19 +167,30 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => VerifyOtpScreen(generatedOtp, phoneNumber),
+                          builder: (context) =>
+                              VerifyOtpScreen(generatedOtp, phoneNumber),
                         ),
                       );
                     } else {
-                      CustomSnackBar.showSnackBar(title: 'Failed', message: 'Failed to send OTP',color: Colors.red);
+                      CustomSnackBar.showSnackBar(
+                          title: 'Failed',
+                          message: 'Failed to send OTP',
+                          color: Colors.red);
                     }
                   } else {
                     // Phone number or terms acceptance is not valid
                     if (!_validatePhoneNumber(phoneNumber)) {
-                      CustomSnackBar.showSnackBar(title: 'Failed', message: 'Invalided mobile number',color: Colors.red);
+                      CustomSnackBar.showSnackBar(
+                          title: 'Failed',
+                          message: 'Invalided mobile number',
+                          color: Colors.red);
                     }
                     if (!acceptTerms) {
-                      CustomSnackBar.showSnackBar(title: 'Failed', message: 'Accept Terms of Use and Privacy Policy',color: Colors.red);
+                      CustomSnackBar.showSnackBar(
+                          title: 'Failed',
+                          message:
+                          'Accept Terms of Use and Privacy Policy',
+                          color: Colors.red);
                     }
                   }
                 },
@@ -279,8 +295,9 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
     http.Response response = await http.post(Uri.parse(apiUrl), body: data);
 
     if (response.statusCode == 200) {
-      CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP sent successfully');
-      Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+      CustomSnackBar.showSnackBar(
+          title: 'Success', message: 'OTP sent successfully');
+      //  Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
       // You may want to store the OTP and other relevant data for verification
       print(otp);
       return otp;
@@ -299,5 +316,43 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
     // return "1111";
     return ((1000 + DateTime.now().microsecondsSinceEpoch % 9000)).toString();
   }
-}
 
+  Future<String?> sendSms({
+    required String to,
+  }) async {
+    String otp = _generateOtp();
+    String token = "115402006251734789985339db4975fe9c1245c4aad4e067ce080";
+    String textMessage = "Your otp is $otp";
+    // Encode the message content
+    String encodedMessage = Uri.encodeComponent(textMessage);
+    String apiUrl = "https://api.bdbulksms.net/api.php?";
+
+    // Construct the URL with parameters
+    String url = "$apiUrl"
+        "token=$token&"
+        "to=$to&"
+        "message=$encodedMessage";
+
+    try {
+      // Prepare the HTTP request
+      HttpClient httpClient = HttpClient();
+      HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
+      HttpClientResponse response = await request.close();
+      // Read the response
+      if (response.statusCode == 200) {
+        String reply = await response.transform(utf8.decoder).join();
+        print("OUTPUT: $reply");
+
+        httpClient.close();
+        return otp;
+      } else {
+        print("Error: ${response.statusCode}");
+        httpClient.close();
+        return null;
+      }
+    } catch (e) {
+      print("Exception: $e");
+    }
+    return null;
+  }
+}

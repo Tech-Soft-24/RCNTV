@@ -142,23 +142,24 @@ class PaymentPage extends StatelessWidget {
                       hintText: 'Amount',
                     ),
 
-
                     24.verticalSpace,
                     Align(
                       alignment: Alignment.bottomCenter,
                       child: CustomButton(
                           onTap: () {
                             int endTime;
+                            int priceInt = int.parse(price!);
                            if(controller.mobileController.text.isEmpty || controller.amountController.text.isEmpty || controller.transactionController.text.isEmpty || controller.selectedLang.value ==''){
                              CustomSnackBar.showSnackBar(title: 'Error', message: "Box shouldn't be empty",color: Colors.red);
                            } else{
-                             if(price=='200'){
+                             if(priceInt < 200){
                                 endTime = 30;
                              } else {
                                 endTime = 365;
                              }
                             controller.paymentOk(payMob: controller.mobileController.text, payId: controller.transactionController.text, package: controller.amountController.text, endTime : endTime, payBy: controller.selectedLang.value);
                           }
+
                           //Get.off(const ChannelScreen());
                           },
                           title: 'Pay Now',
