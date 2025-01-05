@@ -29,42 +29,12 @@ class AppController extends GetxController {
   TextEditingController transactionController = TextEditingController();
 
   TextEditingController mobileotpController = TextEditingController();
-
-
   RxString formattedDate = ''.obs;
-
-  /*
-  List imageCarousal = [
-    {
-      "id": 0,
-      "img-path":
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTXtdXQfOjKC9r0uxgyd4w9AaO8VQea17A4zg&s'
-    },
-    {
-      "id": 1,
-      "img-path":
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRpZ1m3MwdqALSYQKyfyS87XO68lrU8TuN68Q&s'
-    },
-    {
-      "id": 2,
-      "img-path":
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRhMiXRDBn6kLVvlNw_p3hKDyEpjcGQT91nMA&s'
-    },
-    {
-      "id": 3,
-      "img-path":
-          'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSkg0ibnwffJER1eBUbwgzhTaygRqmPAvECDQ&s'
-    },
-    {"id": 4, "img-path": 'https://i.ibb.co.com/4Rtb4xf/banner.jpg'}
-  ];
-  */
-
-  CarouselSliderController carouselSliderController =
-      CarouselSliderController();
+  CarouselSliderController carouselSliderController = CarouselSliderController();
   RxInt currentIndex = 0.obs;
 
   RxString selectedLang = ''.obs;
-  List<String> payment = ['bKash', 'Nagad', 'Rocket', 'Upay'];
+  List<String> payment = ['bKash', 'Nagad', 'Rocket'];
   final box = GetStorage();
 
   RxInt selectIndex = 0.obs;
@@ -206,36 +176,6 @@ class AppController extends GetxController {
     }
   }
 
-  ///
-  // login(String email, String password) {
-  //   // Simple login logic using if-else
-  //   if (email.isEmpty || password.isEmpty) {
-  //     CustomSnackBar.showSnackBar(
-  //         title: 'Error', message: 'Please enter both username and password.');
-  //   } else if (email == 'test' && password == 'test') {
-  //     //splashController.isLogged.value = true;
-  //     box.write('isLogged', true);
-  //     CustomSnackBar.showSnackBar(
-  //         title: 'Success', message: 'Logging Successfully');
-  //     Get.offAll(const HomeScreen());
-  //     //  showMessage("Login successful!");
-  //   } else {
-  //     CustomSnackBar.showSnackBar(
-  //         title: 'Error', message: 'Something went wrong');
-  //     //  showMessage("Invalid username or password.");
-  //   }
-  // }
-  ///
-  // otpConfirm({required String pin}) {
-  //   box.write('isLogged', true);
-  //   if (pin == '1234') {
-  //     CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP verification successfully');
-  //     Get.offAll(const HomeScreen());
-  //   } else {
-  //     CustomSnackBar.showSnackBar(title: 'Failed', message: 'Incorrect OTP',color: Colors.red);
-  //   }
-  // }
-
   paymentOk(
       {required String payMob,
       required String payId,
@@ -370,24 +310,6 @@ class AppController extends GetxController {
     }
   }
 
-  // paymentPaidAlert() {
-  //   //  var paid = box.read('payment');
-  //   //  paymentValue.value = box.read('payment');
-  //   if (paymentValue.value == 'active') {
-  //     print(paymentValue.value);
-  //   } else if (paymentValue.value == 'pending') {
-  //     print(paymentValue.value);
-  //     // Future.delayed(
-  //     //     const Duration(seconds: 5),
-  //     //     () => CustomSnackBar.showSnackBar(
-  //     //         title: 'Payment Pending', message: 'Refresh This Page'));
-  //   } else if (paymentValue.value == 'paid') {
-  //     Future.delayed(
-  //         const Duration(seconds: 5),
-  //         () => CustomSnackBar.showSnackBar(
-  //             title: 'Premium User', message: 'You are enjoying 300+ channel'));
-  //   }
-  // }
 
   subscribe() {
     //  var payment = box.read('payment');
@@ -464,59 +386,6 @@ class AppController extends GetxController {
 
     print(users.toJson());
   }
-
-  // Future<void> getTransactions() async {
-  //   var userNumber = box.read('phoneNumber');
-  //
-  //   try {
-  //     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-  //     await FirebaseFirestore.instance
-  //         .collection('Transactions')
-  //         .where('user', isEqualTo: userNumber)
-  //         .get();
-  //
-  //     if(querySnapshot.docs.isNotEmpty) {
-  //       final firstDocument = querySnapshot.docs.first;
-  //     //  box.write('endTime', firstDocument['endTime']);
-  //       Timestamp endDate = firstDocument['endTime'];
-  //       DateTime dateTime = endDate.toDate();
-  //
-  //       DateFormat outputFormat = DateFormat('dd/MM/yy');
-  //       formattedDate.value = outputFormat.format(dateTime);
-  //     }
-  //
-  //
-  //   } catch (e) {
-  //     
-  //   }
-  // }
-
-  // Future<void> getUser() async {
-  //   var userNumber = box.read('phoneNumber');
-  //
-  //   try {
-  //     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-  //         await FirebaseFirestore.instance
-  //             .collection('Users')
-  //             .where('phoneNumber', isEqualTo: userNumber)
-  //             .get();
-  //
-  //     if (querySnapshot.docs.isNotEmpty) {
-  //       // Add the payment from the first document only
-  //       final firstDocument = querySnapshot.docs.first;
-  //       box.write('payment', firstDocument['payment']);
-  //       //  box.write('isSubscribe', firstDocument['isSubscribe']);
-  //       paymentValue.value = firstDocument['payment'];
-  //     }
-  //
-  //
-  //     // Print headers for debugging
-  //     print("paymentValue**********");
-  //     print(paymentValue.value);
-  //   } catch (e) {
-  //     print('Error getting user: $e');
-  //   }
-  // }
 
   logout() async {
     await box.remove('phoneNumber');
