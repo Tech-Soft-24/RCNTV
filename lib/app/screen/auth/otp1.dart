@@ -5,10 +5,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
-
-import 'package:http/http.dart' as http;
 import 'package:livetv2024/app/widgets/snackbar.dart';
-
 import '../../constant/color.dart';
 import '../../constant/text.dart';
 import '../../widgets/button.dart';
@@ -265,52 +262,52 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
     return regex.hasMatch(phoneNumber);
   }
 
-  Future<String?> sendOtp(String phoneNumber) async {
-    // Replace these values with your actual API key, email ID, and sender ID
-    String apiKey = '115402006251734789985339db4975fe9c1245c4aad4e067ce080';
-    String emailId = 'belalhoshan89@gmail.com';
-    String senderId = '227';
-    // API endpoint
-    String apiUrl = 'https://24bulksms.com/24bulksms/api/otp-api-sms-send';
-
-    // Message for OTP (you can customize this message)
-    String otpMessage = 'Your OTP for Authentication is: ';
-
-    // Generate a random 4-digit OTP
-    String otp = _generateOtp();
-
-    // Construct the message
-    String message = '$otpMessage$otp';
-
-    // Construct the data payload
-    Map<String, String> data = {
-      'api_key': apiKey,
-      'sender_id': senderId,
-      'message': message,
-      'mobile_no': phoneNumber,
-      'user_email': emailId,
-    };
-
-    // Send the OTP via SMS
-    http.Response response = await http.post(Uri.parse(apiUrl), body: data);
-
-    if (response.statusCode == 200) {
-      CustomSnackBar.showSnackBar(
-          title: 'Success', message: 'OTP sent successfully');
-      //  Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
-      // You may want to store the OTP and other relevant data for verification
-      print(otp);
-      return otp;
-      // Return the generated OTP
-    } else {
-      // Handle API call failure
-      print('Failed to send OTP. Response code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      // You may want to handle errors appropriately
-      print(otp);
-      return otp;
-    }
-  }
+  // Future<String?> sendOtp(String phoneNumber) async {
+  //   // Replace these values with your actual API key, email ID, and sender ID
+  //   String apiKey = '115402006251734789985339db4975fe9c1245c4aad4e067ce080';
+  //   String emailId = 'belalhoshan89@gmail.com';
+  //   String senderId = '227';
+  //   // API endpoint
+  //   String apiUrl = 'https://24bulksms.com/24bulksms/api/otp-api-sms-send';
+  //
+  //   // Message for OTP (you can customize this message)
+  //   String otpMessage = 'Your OTP for Authentication is: ';
+  //
+  //   // Generate a random 4-digit OTP
+  //   String otp = _generateOtp();
+  //
+  //   // Construct the message
+  //   String message = '$otpMessage$otp';
+  //
+  //   // Construct the data payload
+  //   Map<String, String> data = {
+  //     'api_key': apiKey,
+  //     'sender_id': senderId,
+  //     'message': message,
+  //     'mobile_no': phoneNumber,
+  //     'user_email': emailId,
+  //   };
+  //
+  //   // Send the OTP via SMS
+  //   http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+  //
+  //   if (response.statusCode == 200) {
+  //     CustomSnackBar.showSnackBar(
+  //         title: 'Success', message: 'OTP sent successfully');
+  //     //  Future.delayed(const Duration(seconds: 4), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+  //     // You may want to store the OTP and other relevant data for verification
+  //     print(otp);
+  //     return otp;
+  //     // Return the generated OTP
+  //   } else {
+  //     // Handle API call failure
+  //     print('Failed to send OTP. Response code: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+  //     // You may want to handle errors appropriately
+  //     print(otp);
+  //     return otp;
+  //   }
+  // }
 
   String _generateOtp() {
     // return "1111";

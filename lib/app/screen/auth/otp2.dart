@@ -1,4 +1,6 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,6 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
-import 'package:http/http.dart' as http;
 import 'package:livetv2024/app/screen/home_screen.dart';
 import 'package:pinput/pinput.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -108,7 +109,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
 
     if (_validatePhoneNumber(phoneNumber)) {
       if (_otpSentCount < 4) {
-        String? generatedOtp = await sendOtp(phoneNumber);
+        String? generatedOtp = await sendSms(to: phoneNumber);
         if (generatedOtp != null) {
           CustomSnackBar.showSnackBar(title: 'Failed', message: 'Resend OTP to $phoneNumber',color: Colors.red);
           _countdown = _calculateCountdown();
@@ -223,7 +224,7 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
                     focusNode.unfocus();
                     if (formKey.currentState!.validate() && pinController.text == widget.generatedOtp) {
                       _navigateToGDetails();
-                      controller.getUser();
+                      controller.userData();
                       box.write('isLogged', true);
                       Get.offAll(()=>const HomeScreen());
                     }},
@@ -282,34 +283,73 @@ class _VerifyOtpScreenState extends State<VerifyOtpScreen> {
     return regex.hasMatch(phoneNumber);
   }
 
-  Future<String?> sendOtp(String phoneNumber) async {
-    String apiKey = '115402006251734789985339db4975fe9c1245c4aad4e067ce080';
-    String emailId = 'belalhoshan89@gmail.com';
-    String senderId = '227';
-    String apiUrl = 'https://24bulksms.com/24bulksms/api/otp-api-sms-send';
-    String otpMessage = 'Your OTP for Authentication is: ';
-    String otp = _generateOtp();
-    String message = '$otpMessage$otp';
-    Map<String, String> data = {
-      'api_key': apiKey,
-      'sender_id': senderId,
-      'message': message,
-      'mobile_no': phoneNumber,
-      'user_email': emailId,
-    };
+  // Future<String?> sendOtp(String phoneNumber) async {
+  //   String apiKey = '115402006251734789985339db4975fe9c1245c4aad4e067ce080';
+  //   String emailId = 'belalhoshan89@gmail.com';
+  //   String senderId = '227';
+  //   String apiUrl = 'https://24bulksms.com/24bulksms/api/otp-api-sms-send';
+  //   String otpMessage = 'Your OTP for Authentication is: ';
+  //   String otp = _generateOtp();
+  //   String message = '$otpMessage$otp';
+  //   Map<String, String> data = {
+  //     'api_key': apiKey,
+  //     'sender_id': senderId,
+  //     'message': message,
+  //     'mobile_no': phoneNumber,
+  //     'user_email': emailId,
+  //   };
+  //
+  //   http.Response response = await http.post(Uri.parse(apiUrl), body: data);
+  //   if (response.statusCode == 200) {
+  //     CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP send successfully');
+  //     //  Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
+  //     print(otp);
+  //     return otp;
+  //   } else {
+  //     print('Failed to send OTP. Response code: ${response.statusCode}');
+  //     print('Response body: ${response.body}');
+  //     print(otp);
+  //     return null;
+  //   }
+  // }
 
-    http.Response response = await http.post(Uri.parse(apiUrl), body: data);
-    if (response.statusCode == 200) {
-      CustomSnackBar.showSnackBar(title: 'Success', message: 'OTP send successfully');
-      //  Future.delayed(const Duration(seconds: 5), () =>CustomSnackBar.showSnackBar(title: otp, message: 'Developer mode OTP',color: AppColor.black, duration: const Duration(seconds: 10)));
-      print(otp);
-      return otp;
-    } else {
-      print('Failed to send OTP. Response code: ${response.statusCode}');
-      print('Response body: ${response.body}');
-      print(otp);
-      return null;
+  Future<String?> sendSms({
+    required String to,
+  }) async {
+    String otp = _generateOtp();
+    String token = "115402006251734789985339db4975fe9c1245c4aad4e067ce080";
+    String textMessage = "Your otp is $otp";
+    // Encode the message content
+    String encodedMessage = Uri.encodeComponent(textMessage);
+    String apiUrl = "https://api.bdbulksms.net/api.php?";
+
+    // Construct the URL with parameters
+    String url = "$apiUrl"
+        "token=$token&"
+        "to=$to&"
+        "message=$encodedMessage";
+
+    try {
+      // Prepare the HTTP request
+      HttpClient httpClient = HttpClient();
+      HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
+      HttpClientResponse response = await request.close();
+      // Read the response
+      if (response.statusCode == 200) {
+        String reply = await response.transform(utf8.decoder).join();
+        print("OUTPUT: $reply");
+
+        httpClient.close();
+        return otp;
+      } else {
+        print("Error: ${response.statusCode}");
+        httpClient.close();
+        return null;
+      }
+    } catch (e) {
+      print("Exception: $e");
     }
+    return null;
   }
 
   String _generateOtp() {
@@ -328,6 +368,7 @@ class FirebaseServices {
       "deviceToken": deviceToken,
       'active': true,
       'payment': 'active',
+      'package': 'none',
       'endTime': Timestamp.now(),
     });
   }

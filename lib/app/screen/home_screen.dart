@@ -43,20 +43,40 @@ class HomeScreen extends StatelessWidget {
                   return Dialog(
                     backgroundColor: AppColor.white,
                     child: Container(
-                      padding: const EdgeInsets.only(top: 55,bottom: 40),
+                      padding: const EdgeInsets.only(top: 20,bottom: 20),
                       height: 465,
                       width: double.maxFinite,
                       decoration: BoxDecoration(
                           color: AppColor.white, borderRadius: BorderRadius.circular(20)),
                       child: Column(
                         children: [
-                           Text(
-                            'You are Enjoying ${controller.users[0]['package']} Package',
-                            textAlign: TextAlign.center,
-                            softWrap: true,
-                            style: AppTextStyle.purple16w500,
+                          CircleAvatar(radius: 35,backgroundColor: AppColor.pink,
+                          backgroundImage: controller.users[0]['profile_img']=='' ? NetworkImage('https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png') : NetworkImage('${controller.users[0]['profile_img']}'),
                           ),
-                          100.verticalSpace,
+
+                          Container(
+                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(12),border: Border.all(color: AppColor.grey,width: 1.0)),
+                            padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
+                            margin: EdgeInsets.symmetric(vertical: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Account : ${controller.users[0]['phoneNumber']}',
+                                  softWrap: true,
+                                  style: AppTextStyle.grey16w500,
+                                ),
+                                 10.verticalSpace,
+                                 Text(
+                                  'You are Enjoying ${controller.users[0]['package']} Tk Package',
+                                  textAlign: TextAlign.center,
+                                  softWrap: true,
+                                  style: AppTextStyle.purple16w500,
+                                ),
+                              ],
+                            ),
+                          ),
+                          50.verticalSpace,
                           const SizedBox(
                               width: 245,
                               child: Text(
@@ -65,33 +85,24 @@ class HomeScreen extends StatelessWidget {
                                 softWrap: true,
                                 style: AppTextStyle.grey16w500,
                               )),
-                           SizedBox(
-                              width: 245,
-                              child: Text(
-                                'Account : ${controller.users[0]['phoneNumber']}',
-                                textAlign: TextAlign.center,
-                                softWrap: true,
-                                style: AppTextStyle.grey16w500,
-                              )),
+
                           20.verticalSpace,
-                          Padding(
-                            padding: const EdgeInsets.symmetric(horizontal: 50.0),
-                            child: SizedBox(
-                              height: 50,
-                              width: double.maxFinite,
-                              child: ElevatedButton(
-                                onPressed: () async{
-                                  controller.logout();
-                                },
-                                style: ElevatedButton.styleFrom(
-                                    backgroundColor: AppColor.purple,
-                                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                                    shape: RoundedRectangleBorder(
-                                        borderRadius: BorderRadius.circular(100))),
-                                child: const Text(
-                                  "Log Out",
-                                  style: AppTextStyle.white20w600,
-                                ),
+                          Container(
+                            height: 50,
+                            width: double.maxFinite,
+                            margin: const EdgeInsets.symmetric(horizontal: 50.0),
+                            child: ElevatedButton(
+                              onPressed: () async{
+                                controller.logout();
+                              },
+                              style: ElevatedButton.styleFrom(
+                                  backgroundColor: AppColor.purple,
+                                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(100))),
+                              child: const Text(
+                                "Log Out",
+                                style: AppTextStyle.white14w600,
                               ),
                             ),
                           ),
@@ -100,7 +111,7 @@ class HomeScreen extends StatelessWidget {
                               onPressed: () => Get.back(),
                               child: const Text(
                                 "No I Don't",
-                                style: AppTextStyle.purple16w500,
+                                style: AppTextStyle.purple14w600,
                               ))
                         ],
                       ),
@@ -128,13 +139,12 @@ class HomeScreen extends StatelessWidget {
           child: Column(
               children: [
                 10.verticalSpace,
-
                 Obx(
                     ()=> controller.paymentValue.value == 'pending'? Column(children: [
                       const Text('Click to Check your Payment',style: AppTextStyle.purple16w500,),
                       Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 100,vertical: 20),
-                        child: CustomButton(onTap: (){controller.getUser(); Future.delayed(const Duration(seconds: 1), () =>controller.paymentCheck());}, title: 'Refresh',color: Colors.green,),
+                        child: CustomButton(onTap: (){controller.userData(); Future.delayed(const Duration(seconds: 1), () =>controller.paymentCheck());}, title: 'Refresh',color: Colors.green,),
                       )
                                       ],) : controller.paymentValue.value == 'active' ? const SizedBox() :  Text('You are now Pro member until ${controller.formattedDate.value}',style: AppTextStyle.purple16w500,),
                 ),
@@ -213,7 +223,7 @@ class HomeScreen extends StatelessWidget {
                     //  Get.to(const ChannelScreen());
                   },
                   title: 'Live TV',
-                  subtitle: '300+ channel',
+                  subtitle: '400+ channel',
                   gradient: AppColor.gradient,
                 ),
                 16.verticalSpace,

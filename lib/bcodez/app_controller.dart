@@ -247,7 +247,7 @@ class AppController extends GetxController {
       await FirebaseFirestore.instance
           .collection('Users')
           .doc(userNumber)
-          .update({'payment': 'pending', 'endTime': Timestamp.fromDate(DateTime.now().add(Duration(days: endTime)))});
+          .update({'payment': 'pending', 'package': package,  'endTime': Timestamp.fromDate(DateTime.now().add(Duration(days: endTime)))});
       await FirebaseFirestore.instance
           .collection("Transactions")
           .doc()
@@ -260,7 +260,7 @@ class AppController extends GetxController {
         'payTime': Timestamp.now(),
         'endTime': Timestamp.fromDate(DateTime.now().add(Duration(days: endTime)))
       });
-      await getUser();
+      await userData();
       CustomSnackBar.showSnackBar(
           title: 'Payment Pending', message: 'Check Again Later');
 
@@ -270,27 +270,6 @@ class AppController extends GetxController {
     }
 
   }
-
-  /// Listens for changes in Firestore for the endTime
-  //  listenForEndTime() {
-  //   var userNumber = box.read('phoneNumber');
-  //   try {
-  //     FirebaseFirestore.instance
-  //         .collection("Transactions")
-  //         .doc()
-  //         .snapshots()
-  //         .listen((snapshot) {
-  //       if (snapshot.exists) {
-  //         Timestamp? endTime = snapshot.data()?['endTime'];
-  //         if (endTime != null) {
-  //           checkEndTime(endTime);
-  //         }
-  //       }
-  //     });
-  //   } catch (e) {
-  //     // TODO
-  //   }
-  // }
 
   listenForEndTime() {
     var userNumber = box.read('phoneNumber');
@@ -331,33 +310,6 @@ class AppController extends GetxController {
       // TODO
     }
   }
-
-  /// Periodic check every minute as a fallback
-  //  startPeriodicCheck() {
-  //   try {
-  //     ever(paymentValue, (value) {
-  //       if (value == 'paid') {
-  //         Timer.periodic(const Duration(minutes: 1), (timer) async {
-  //           var userNumber = box.read('phoneNumber');
-  //           DocumentSnapshot snapshot = await FirebaseFirestore.instance
-  //               .collection("Transactions")
-  //               .doc(userNumber)
-  //               .get();
-  //
-  //           if (snapshot.exists) {
-  //             Map<String, dynamic>? data =
-  //                 snapshot.data() as Map<String, dynamic>?;
-  //             Timestamp? endTime = data?['endTime'];
-  //             if (endTime != null) {
-  //               checkEndTime(endTime);
-  //             }
-  //           }
-  //         });
-  //       }
-  //     });
-  //   } catch(e) { // TODO
-  //      }
-  // }
 
   /// Periodic check every minute as a fallback
   startPeriodicCheck() {
@@ -412,30 +364,30 @@ class AppController extends GetxController {
   paymentCheck() {
     //paymentValue.value = box.read('payment');
     if (paymentValue.value == 'paid') {
-      //  CustomSnackBar.showSnackBar(title: 'Congratulation', message: 'You are Now Premium User');
+        CustomSnackBar.showSnackBar(title: 'Congratulation', message: 'You are Now Premium User');
     } else if (paymentValue.value == 'pending') {
       CustomSnackBar.showSnackBar(title: 'Payment Pending', message: 'Refresh Again Later');
     }
   }
 
-  paymentPaidAlert() {
-    //  var paid = box.read('payment');
-    //  paymentValue.value = box.read('payment');
-    if (paymentValue.value == 'active') {
-      print(paymentValue.value);
-    } else if (paymentValue.value == 'pending') {
-      print(paymentValue.value);
-      // Future.delayed(
-      //     const Duration(seconds: 5),
-      //     () => CustomSnackBar.showSnackBar(
-      //         title: 'Payment Pending', message: 'Refresh This Page'));
-    } else if (paymentValue.value == 'paid') {
-      Future.delayed(
-          const Duration(seconds: 5),
-          () => CustomSnackBar.showSnackBar(
-              title: 'Premium User', message: 'You are enjoying 300+ channel'));
-    }
-  }
+  // paymentPaidAlert() {
+  //   //  var paid = box.read('payment');
+  //   //  paymentValue.value = box.read('payment');
+  //   if (paymentValue.value == 'active') {
+  //     print(paymentValue.value);
+  //   } else if (paymentValue.value == 'pending') {
+  //     print(paymentValue.value);
+  //     // Future.delayed(
+  //     //     const Duration(seconds: 5),
+  //     //     () => CustomSnackBar.showSnackBar(
+  //     //         title: 'Payment Pending', message: 'Refresh This Page'));
+  //   } else if (paymentValue.value == 'paid') {
+  //     Future.delayed(
+  //         const Duration(seconds: 5),
+  //         () => CustomSnackBar.showSnackBar(
+  //             title: 'Premium User', message: 'You are enjoying 300+ channel'));
+  //   }
+  // }
 
   subscribe() {
     //  var payment = box.read('payment');
@@ -459,7 +411,6 @@ class AppController extends GetxController {
   }
 
   openUrl({required String url}) async{
-
     await launchUrl(Uri.parse(url), mode: LaunchMode.platformDefault);
 
   }
@@ -488,77 +439,84 @@ class AppController extends GetxController {
     users.clear();
     await FirebaseFirestore.instance
         .collection('Users')
-        .where('user', isEqualTo: userNumber)
+        .where('phoneNumber', isEqualTo: userNumber)
         .get()
         .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((element) {
         users.add({
-          'profile_img': element['profile_img'],
-          'name': element['name'],
-          'phoneNumber': element['phoneNumber'],
-          'payment': element['payment'],
-          'address': element['address'],
-          'endTime': element['endTime'],
-          'package': element['package'],
+          'profile_img': element['profile_img'] ?? '',
+          'name': element['name'] ?? '',
+          'phoneNumber': element['phoneNumber'] ?? '',
+          'payment': element['payment'] ?? '',
+          'address': element['address'] ?? '',
+          'endTime': element['endTime'] ?? '',
+          'package': element['package'] ?? '',
           'document_id': element.id,
         });
-      });
-    });
-  }
-
-  Future<void> getTransactions() async {
-    var userNumber = box.read('phoneNumber');
-
-    try {
-      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-      await FirebaseFirestore.instance
-          .collection('Transactions')
-          .where('user', isEqualTo: userNumber)
-          .get();
-
-      if(querySnapshot.docs.isNotEmpty) {
-        final firstDocument = querySnapshot.docs.first;
-      //  box.write('endTime', firstDocument['endTime']);
-        Timestamp endDate = firstDocument['endTime'];
+        paymentValue.value = element['payment'];
+        Timestamp endDate = element['endTime'];
         DateTime dateTime = endDate.toDate();
 
         DateFormat outputFormat = DateFormat('dd/MM/yy');
         formattedDate.value = outputFormat.format(dateTime);
-      }
+      });
+    });
 
-
-    } catch (e) {
-      // TODO
-    }
+    print(users.toJson());
   }
 
-  Future<void> getUser() async {
-    var userNumber = box.read('phoneNumber');
+  // Future<void> getTransactions() async {
+  //   var userNumber = box.read('phoneNumber');
+  //
+  //   try {
+  //     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+  //     await FirebaseFirestore.instance
+  //         .collection('Transactions')
+  //         .where('user', isEqualTo: userNumber)
+  //         .get();
+  //
+  //     if(querySnapshot.docs.isNotEmpty) {
+  //       final firstDocument = querySnapshot.docs.first;
+  //     //  box.write('endTime', firstDocument['endTime']);
+  //       Timestamp endDate = firstDocument['endTime'];
+  //       DateTime dateTime = endDate.toDate();
+  //
+  //       DateFormat outputFormat = DateFormat('dd/MM/yy');
+  //       formattedDate.value = outputFormat.format(dateTime);
+  //     }
+  //
+  //
+  //   } catch (e) {
+  //     
+  //   }
+  // }
 
-
-    try {
-      final QuerySnapshot<Map<String, dynamic>> querySnapshot =
-          await FirebaseFirestore.instance
-              .collection('Users')
-              .where('phoneNumber', isEqualTo: userNumber)
-              .get();
-
-      if (querySnapshot.docs.isNotEmpty) {
-        // Add the payment from the first document only
-        final firstDocument = querySnapshot.docs.first;
-        box.write('payment', firstDocument['payment']);
-        //  box.write('isSubscribe', firstDocument['isSubscribe']);
-        paymentValue.value = firstDocument['payment'];
-      }
-
-
-      // Print headers for debugging
-      print("paymentValue**********");
-      print(paymentValue.value);
-    } catch (e) {
-      print('Error getting user: $e');
-    }
-  }
+  // Future<void> getUser() async {
+  //   var userNumber = box.read('phoneNumber');
+  //
+  //   try {
+  //     final QuerySnapshot<Map<String, dynamic>> querySnapshot =
+  //         await FirebaseFirestore.instance
+  //             .collection('Users')
+  //             .where('phoneNumber', isEqualTo: userNumber)
+  //             .get();
+  //
+  //     if (querySnapshot.docs.isNotEmpty) {
+  //       // Add the payment from the first document only
+  //       final firstDocument = querySnapshot.docs.first;
+  //       box.write('payment', firstDocument['payment']);
+  //       //  box.write('isSubscribe', firstDocument['isSubscribe']);
+  //       paymentValue.value = firstDocument['payment'];
+  //     }
+  //
+  //
+  //     // Print headers for debugging
+  //     print("paymentValue**********");
+  //     print(paymentValue.value);
+  //   } catch (e) {
+  //     print('Error getting user: $e');
+  //   }
+  // }
 
   logout() async {
     await box.remove('phoneNumber');
@@ -573,9 +531,10 @@ class AppController extends GetxController {
   void onInit() async {
     await listenForEndTime();
     await startPeriodicCheck();
-    await getUser();
-    await getTransactions();
-//    await paymentPaidAlert();
+    //    await getUser();
+    await userData();
+    //    await getTransactions();
+    //    await paymentPaidAlert();
     await fetchHomeLinks();
     await fetchCategory();
     await fetchData();
