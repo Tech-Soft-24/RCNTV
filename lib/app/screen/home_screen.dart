@@ -15,11 +15,10 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-
-
-    return GetX<AppController>(
+    return GetBuilder(
         init: AppController(),
-        builder: (controller){return Scaffold(
+        builder: (controller){
+          return Scaffold(
       //backgroundColor: AppColor.black,
       appBar: AppBar(
         automaticallyImplyLeading: false,
@@ -51,13 +50,13 @@ class HomeScreen extends StatelessWidget {
                       child: Column(
                         children: [
                           CircleAvatar(radius: 35,backgroundColor: AppColor.pink,
-                          backgroundImage: controller.users[0]['profile_img']=='' ? NetworkImage('https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png') : NetworkImage('${controller.users[0]['profile_img']}'),
+                          backgroundImage: controller.users[0]['profile_img']=='' ? const NetworkImage('https://www.pngall.com/wp-content/uploads/5/User-Profile-PNG.png') : NetworkImage('${controller.users[0]['profile_img']}'),
                           ),
 
                           Container(
                             decoration: BoxDecoration(borderRadius: BorderRadius.circular(12),border: Border.all(color: AppColor.grey,width: 1.0)),
-                            padding: EdgeInsets.symmetric(vertical: 20,horizontal: 10),
-                            margin: EdgeInsets.symmetric(vertical: 20),
+                            padding: const EdgeInsets.symmetric(vertical: 20,horizontal: 10),
+                            margin: const EdgeInsets.symmetric(vertical: 20),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -135,7 +134,7 @@ class HomeScreen extends StatelessWidget {
           )
         ],
       ),
-      body: SingleChildScrollView(
+      body: controller.isLoading.value ==1 ? SingleChildScrollView(
           child: Column(
               children: [
                 10.verticalSpace,
@@ -254,8 +253,10 @@ class HomeScreen extends StatelessWidget {
                 ),
               ],
             ),
-
-        ),
+        ) : const Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [Center(child: CircularProgressIndicator(color: AppColor.pink,))],)
 
     );});
   }

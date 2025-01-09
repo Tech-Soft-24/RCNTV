@@ -66,8 +66,10 @@ class AppController extends GetxController {
   RxBool fullscreen = false.obs;
   RxString paymentValue = ''.obs;
 
+  RxInt isLoading = 0.obs;
 
-  fetchData() async {
+
+  Future<void> fetchData() async {
     channel.clear();
     try {
       await FirebaseFirestore.instance
@@ -88,7 +90,7 @@ class AppController extends GetxController {
       // TODO
     }
   }
-  fetchCategory() async {
+  Future<void> fetchCategory() async {
     catList.clear();
     try {
       await FirebaseFirestore.instance
@@ -108,8 +110,7 @@ class AppController extends GetxController {
       // TODO
     }
   }
-
-  fetchSlider() async {
+  Future<void> fetchSlider() async {
     imageCarousal.clear();
     try {
       await FirebaseFirestore.instance
@@ -123,12 +124,14 @@ class AppController extends GetxController {
           });
         });
       });
+
+      isLoading.value = 1;
     } catch (e) {
       // TODO
     }
   }
+  Future<void> fetchPaymentOption() async {
 
-  fetchPaymentOption() async {
     paymentOption.clear();
     try {
       await FirebaseFirestore.instance
@@ -152,7 +155,7 @@ class AppController extends GetxController {
   }
 
 
-  fetchHomeLinks() async {
+  Future<void> fetchHomeLinks() async {
     homeLinks.clear();
     try {
       await FirebaseFirestore.instance
@@ -337,7 +340,7 @@ class AppController extends GetxController {
 
   }
 
-  headersData() async {
+  Future<void> headersData() async {
     headers.clear();
     await FirebaseFirestore.instance
         .collection('toffee')
@@ -356,7 +359,7 @@ class AppController extends GetxController {
     });
   }
 
-  userData() async {
+  Future<void> userData() async {
     var userNumber = box.read('phoneNumber');
     users.clear();
     await FirebaseFirestore.instance
@@ -396,21 +399,46 @@ class AppController extends GetxController {
     Get.offAll(() => const SplashScreen());
   }
 
-  @override
-  void onInit() async {
-    await listenForEndTime();
-    await startPeriodicCheck();
-    //    await getUser();
-    await userData();
-    //    await getTransactions();
-    //    await paymentPaidAlert();
-    await fetchHomeLinks();
-    await fetchCategory();
-    await fetchData();
-    await fetchSlider();
-    await headersData();
-    await fetchPaymentOption();
+  // @override
+  // Future<void> onInit() async {
+  //
+  //   //    await getUser();
+  //   await userData();
+  //   //    await getTransactions();
+  //   //    await paymentPaidAlert();
+  //   await fetchHomeLinks();
+  //   await fetchCategory();
+  //   await fetchData();
+  //   await fetchSlider();
+  //   await headersData();
+  //   await listenForEndTime();
+  //   await startPeriodicCheck();
+  //   await fetchPaymentOption();
+  //
+  //   super.onInit();
+  // }
 
+
+  @override
+  Future<void> onInit() async {
     super.onInit();
+    try {
+      await userData();
+      await fetchHomeLinks();
+      await fetchCategory();
+      await fetchData();
+      await fetchSlider();
+      await headersData();
+      await listenForEndTime();
+      await startPeriodicCheck();
+      await fetchPaymentOption();
+    } catch (e) {
+      print('Error in onInit: $e');
+    }
   }
+
+
+
+
+
 }
