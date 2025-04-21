@@ -1,5 +1,3 @@
-
-
 import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:livetv2024/bcodez/otp_signup.dart';
@@ -8,21 +6,23 @@ import 'package:livetv2024/bcodez/app_controller.dart';
 import '../screen/auth/otp1.dart';
 import '../screen/auth/login_screen.dart';
 
-class SplashController extends GetxController{
+class SplashController extends GetxController {
   AppController controller = Get.put(AppController());
 
   final box = GetStorage();
 
   //RxBool isLogged = loggedIn.obs;
 
-  splashOpen(){
+  splashOpen() {
     var loggedIn = box.read('isLogged');
-    if(loggedIn == true){
-      Future.delayed(const Duration(seconds: 4), () => Get.off(const HomeScreen()));
+    if (loggedIn == true) {
+      Future.delayed(
+          const Duration(seconds: 4), () => Get.off(const HomeScreen()));
     } else {
       // Future.delayed(const Duration(seconds: 4), () => Get.off(const OtpSignupScreen()));
-       Future.delayed(const Duration(seconds: 4), () => Get.off(const SignInOrSignUpWithPhone()));
-     }
+      Future.delayed(const Duration(seconds: 4),
+          () => Get.off(const SignInOrSignUpWithPhone()));
+    }
   }
 
   @override

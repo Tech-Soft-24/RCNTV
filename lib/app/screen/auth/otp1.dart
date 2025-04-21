@@ -142,55 +142,55 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
                 onTap: isSendingOTP
                     ? null
                     : () async {
-                  String phoneNumber = phoneNumberController.text.trim();
+                        String phoneNumber = phoneNumberController.text.trim();
 
-                  // Validate the phone number and acceptance of terms
-                  if (_validatePhoneNumber(phoneNumber) && acceptTerms) {
-                    if (mounted) {
-                      setState(() {
-                        isSendingOTP = true;
-                      });
-                    }
-                    // Send OTP
-                    String? generatedOtp = await sendSms(to: phoneNumber);
-                    debugPrint("OTP: $generatedOtp");
-                    if (mounted) {
-                      setState(() {
-                        isSendingOTP = false;
-                      });
-                    }
+                        // Validate the phone number and acceptance of terms
+                        if (_validatePhoneNumber(phoneNumber) && acceptTerms) {
+                          if (mounted) {
+                            setState(() {
+                              isSendingOTP = true;
+                            });
+                          }
+                          // Send OTP
+                          String? generatedOtp = await sendSms(to: phoneNumber);
+                          debugPrint("OTP: $generatedOtp");
+                          if (mounted) {
+                            setState(() {
+                              isSendingOTP = false;
+                            });
+                          }
 
-                    if (generatedOtp != null) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) =>
-                              VerifyOtpScreen(generatedOtp, phoneNumber),
-                        ),
-                      );
-                    } else {
-                      CustomSnackBar.showSnackBar(
-                          title: 'Failed',
-                          message: 'Failed to send OTP',
-                          color: Colors.red);
-                    }
-                  } else {
-                    // Phone number or terms acceptance is not valid
-                    if (!_validatePhoneNumber(phoneNumber)) {
-                      CustomSnackBar.showSnackBar(
-                          title: 'Failed',
-                          message: 'Invalided mobile number',
-                          color: Colors.red);
-                    }
-                    if (!acceptTerms) {
-                      CustomSnackBar.showSnackBar(
-                          title: 'Failed',
-                          message:
-                          'Accept Terms of Use and Privacy Policy',
-                          color: Colors.red);
-                    }
-                  }
-                },
+                          if (generatedOtp != null) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    VerifyOtpScreen(generatedOtp, phoneNumber),
+                              ),
+                            );
+                          } else {
+                            CustomSnackBar.showSnackBar(
+                                title: 'Failed',
+                                message: 'Failed to send OTP',
+                                color: Colors.red);
+                          }
+                        } else {
+                          // Phone number or terms acceptance is not valid
+                          if (!_validatePhoneNumber(phoneNumber)) {
+                            CustomSnackBar.showSnackBar(
+                                title: 'Failed',
+                                message: 'Invalided mobile number',
+                                color: Colors.red);
+                          }
+                          if (!acceptTerms) {
+                            CustomSnackBar.showSnackBar(
+                                title: 'Failed',
+                                message:
+                                    'Accept Terms of Use and Privacy Policy',
+                                color: Colors.red);
+                          }
+                        }
+                      },
               ),
               // SizedBox(
               //   height: 45,
@@ -318,38 +318,50 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
     required String to,
   }) async {
     String otp = _generateOtp();
-    String token = "115402006251734789985339db4975fe9c1245c4aad4e067ce080";
-    String textMessage = "Your otp is $otp";
+    // Updated to use new API key from documentation
+    String apiKey = "qIn2LrUVyLSKkrEiiT0j";
+    // Updated message format as per new requirements
+    String textMessage = "Your OTP is $otp";
+    String senderID = "8809617625357";
     // Encode the message content
     String encodedMessage = Uri.encodeComponent(textMessage);
-    String apiUrl = "https://api.bdbulksms.net/api.php?";
+    // Updated API URL as per new documentation
+    String apiUrl = "http://bulksmsbd.net/api/smsapi?";
 
-    // Construct the URL with parameters
+    // Construct the URL with new required parameters
     String url = "$apiUrl"
-        "token=$token&"
-        "to=$to&"
+        "api_key=$apiKey&"
+        "type=text&"
+        "number=$to&"
+        "senderid=$senderID&" // From new documentation
         "message=$encodedMessage";
 
     try {
-      // Prepare the HTTP request
       HttpClient httpClient = HttpClient();
       HttpClientRequest request = await httpClient.getUrl(Uri.parse(url));
       HttpClientResponse response = await request.close();
-      // Read the response
+
+      String reply = await response.transform(utf8.decoder).join();
+      httpClient.close();
+
       if (response.statusCode == 200) {
-        String reply = await response.transform(utf8.decoder).join();
         print("OUTPUT: $reply");
 
-        httpClient.close();
-        return otp;
+        // Check if response contains success code (202 as per new docs)
+        if (reply.contains('"code":202') ||
+            reply.contains('SMS Submitted Successfully')) {
+          return otp;
+        } else {
+          print("SMS API Error: $reply");
+          return null;
+        }
       } else {
-        print("Error: ${response.statusCode}");
-        httpClient.close();
+        print("HTTP Error: ${response.statusCode}");
         return null;
       }
     } catch (e) {
       print("Exception: $e");
+      return null;
     }
-    return null;
   }
 }
