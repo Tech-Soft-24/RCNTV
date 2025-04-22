@@ -193,7 +193,7 @@ class HomeScreen extends StatelessWidget {
                       return InkWell(
                           onTap: () {
                             // Handle image tap event (consider navigation or action based on index)
-                            print("Image at index ${controller.currentIndex.value} tapped!"); // Or perform desired action
+                            debugPrint("Image at index ${controller.currentIndex.value} tapped!"); // Or perform desired action
                           },
                           child: Container(
                             margin: const EdgeInsets.only(
@@ -228,7 +228,7 @@ class HomeScreen extends StatelessWidget {
                 16.verticalSpace,
                 HomeContainer(
                   onTap: () {controller.openUrl(url: controller.homeLinks[0]['rcnTv']);
-                    print(controller.homeLinks[0]['rcnTv']);
+                    debugPrint(controller.homeLinks[0]['rcnTv']);
                     },
                   title: 'RCN TV',
                   gradient: AppColor.gradient,

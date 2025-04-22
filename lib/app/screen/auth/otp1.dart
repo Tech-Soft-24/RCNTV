@@ -321,7 +321,7 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
     // Updated to use new API key from documentation
     String apiKey = "qIn2LrUVyLSKkrEiiT0j";
     // Updated message format as per new requirements
-    String textMessage = "Your OTP is $otp";
+    String textMessage = "Your RCN TV OTP is $otp";
     String senderID = "8809617625357";
     // Encode the message content
     String encodedMessage = Uri.encodeComponent(textMessage);
@@ -345,22 +345,22 @@ class _SignInOrSignUpWithPhoneState extends State<SignInOrSignUpWithPhone> {
       httpClient.close();
 
       if (response.statusCode == 200) {
-        print("OUTPUT: $reply");
+        debugPrint("OUTPUT: $reply");
 
         // Check if response contains success code (202 as per new docs)
         if (reply.contains('"code":202') ||
             reply.contains('SMS Submitted Successfully')) {
           return otp;
         } else {
-          print("SMS API Error: $reply");
+          debugPrint("SMS API Error: $reply");
           return null;
         }
       } else {
-        print("HTTP Error: ${response.statusCode}");
+        debugPrint("HTTP Error: ${response.statusCode}");
         return null;
       }
     } catch (e) {
-      print("Exception: $e");
+      debugPrint("Exception: $e");
       return null;
     }
   }
