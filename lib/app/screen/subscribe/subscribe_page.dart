@@ -37,7 +37,7 @@ class SubscribePage extends StatelessWidget {
                 height: 50,
                 decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(50),
-                    color: AppColor.purple.withOpacity(0.2)
+                    color: AppColor.purple.withValues(alpha: 0.2)
                 ),
                 child: ListView.builder(
                     itemCount: controller.paymentOption.length,

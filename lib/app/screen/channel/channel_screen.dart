@@ -27,6 +27,7 @@ class ChannelScreen extends StatelessWidget {
             //backgroundColor: AppColor.black,
             appBar: customAppbar(() {
               Get.off(const HomeScreen());
+              controller.selectedIndex.value = 0;
             }, 'Live Channels'),
             body: Column(
               children: [
@@ -95,7 +96,7 @@ class ChannelScreen extends StatelessWidget {
                           itemBuilder: (_, index) {
                             var channels = controller.channel[index];
 
-                            debugPrint(channels);
+                            debugPrint(channels.toString());
                             return InkWell(
                               borderRadius: BorderRadius.circular(8),
                               onTap: () {
@@ -161,7 +162,7 @@ class ChannelScreen extends StatelessWidget {
                           itemBuilder: (_, index) {
                             var channels = filterChannels[index];
 
-                            debugPrint(channels);
+                            debugPrint(channels.toString());
                             return InkWell(
                               borderRadius: BorderRadius.circular(8),
                               onTap: () {

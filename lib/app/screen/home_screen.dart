@@ -15,7 +15,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
 
-    return GetBuilder(
+    return GetX(
         init: AppController(),
         builder: (controller){
           return Scaffold(
@@ -151,10 +151,11 @@ class HomeScreen extends StatelessWidget {
                 CarouselSlider(
                   items: controller.imageCarousal.map((image) => Builder(builder: (context) {
                     return Container(
-                      height: 130.0,
+                      height: 150.0,
                       margin: const EdgeInsets.symmetric(horizontal: 20),
                       decoration: image["img-path"] == "" && image["img-path"].isEmpty ? BoxDecoration(
                         color: AppColor.purple,
+                        border: Border.all(color: AppColor.purple,style: BorderStyle.solid,width: 1.0),
                         borderRadius: BorderRadius.circular(
                             16),
                       ) : BoxDecoration(
@@ -162,6 +163,7 @@ class HomeScreen extends StatelessWidget {
                           image: NetworkImage(image["img-path"]),
                           fit: BoxFit.fill,
                         ),
+                        border: Border.all(color: AppColor.purple,style: BorderStyle.solid,width: 1.0),
                         borderRadius: BorderRadius.circular(
                             16), // Adjust the radius as needed
                       ),
@@ -169,7 +171,7 @@ class HomeScreen extends StatelessWidget {
                   }))
                       .toList(),
                   options: CarouselOptions(
-                      height: 125.0,
+                      height: 145.0,
                       aspectRatio: 2,
                       viewportFraction: 1,
                       initialPage: controller.currentIndex.value,

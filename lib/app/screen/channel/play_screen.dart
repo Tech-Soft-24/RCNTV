@@ -43,7 +43,7 @@ class PlayScreen extends StatelessWidget {
                     url: url=='' ? "https://cph-p2p-msl.akamaized.net/hls/live/2000341/test/master.m3u8" : url,
                     autoPlayVideoAfterInit: true,
                     displayFullScreenAfterInit: false,
-                    headers: url.startsWith("https://bldcmprod-cdn.toffeelive.com/") ? controller.headers[0] : url.startsWith("https://mprod-cdn.toffeelive.com/")? controller.headers[1] : url.startsWith("https://live-cdn.tsports.com/")? controller.headers[2] : null,
+                    headers: url.startsWith("https://bldcmprod-cdn.toffeelive.com/") ? controller.headers[0] : url.startsWith("https://mprod-cdn.toffeelive.com/")? controller.headers[1] : url.contains("live/match-1/") ? controller.headers[2] : url.contains("live/match-2/") ? controller.headers[3] :url.startsWith("https://live-cdn.tsports.com/")? controller.headers[4] : null,
                     videoStyle:  const VideoStyle(
                       enableSystemOrientationsOverride: false,
                       qualityStyle: TextStyle(

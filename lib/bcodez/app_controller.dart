@@ -41,7 +41,7 @@ class AppController extends GetxController {
   List subscribeList = ['Monthly', 'Yearly'];
 
   RxBool monthSelect = true.obs;
-  RxList<dynamic> channel = <Map<String, dynamic>>[].obs;
+  RxList<Map<String, dynamic>> channel = <Map<String, dynamic>>[].obs;
   RxList<Map<String, String>> headers = <Map<String, String>>[].obs;
   RxList imageCarousal = <Map<String, dynamic>>[].obs;
   RxList<Map<String, dynamic>> users = <Map<String, dynamic>>[].obs;
@@ -115,6 +115,7 @@ class AppController extends GetxController {
     try {
       await FirebaseFirestore.instance
           .collection('slider')
+          .limit(5)
           .get()
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) {
@@ -124,7 +125,6 @@ class AppController extends GetxController {
           });
         });
       });
-
       isLoading.value = 1;
     } catch (e) {
       // TODO
@@ -140,11 +140,11 @@ class AppController extends GetxController {
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) {
           paymentOption.add({
-            'package': element['package'],
-            'tk': element['tk'],
-            'planText': element['planText'],
-            'payNum': element['payNum'],
-            'helpNum': element['helpNum'],
+            'package': element['package'] ?? " ",
+            'tk': element['tk']?? " ",
+            'planText': element['planText']?? " ",
+            'payNum': element['payNum']?? " ",
+            'helpNum': element['helpNum']?? " ",
             'document_id': element.id,
           });
         });
@@ -319,6 +319,7 @@ class AppController extends GetxController {
     //  var isSubscribe = box.read('isSubscribe');
     if (paymentValue.value == 'paid') {
       Get.to(const ChannelScreen());
+      print(channel.toJson());
     } else {
       if (paymentValue.value == 'pending') {
         CustomSnackBar.showSnackBar(
@@ -423,15 +424,18 @@ class AppController extends GetxController {
   Future<void> onInit() async {
     super.onInit();
     try {
-      await userData();
       await fetchHomeLinks();
+      await fetchPaymentOption();
+      await fetchSlider();
+      await userData();
+
       await fetchCategory();
       await fetchData();
-      await fetchSlider();
+
       await headersData();
       await listenForEndTime();
       await startPeriodicCheck();
-      await fetchPaymentOption();
+
     } catch (e) {
       print('Error in onInit: $e');
     }
