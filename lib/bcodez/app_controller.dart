@@ -115,7 +115,7 @@ class AppController extends GetxController {
     try {
       await FirebaseFirestore.instance
           .collection('slider')
-          .limit(5)
+          .limit(10)
           .get()
           .then((QuerySnapshot querySnapshot) {
         querySnapshot.docs.forEach((element) {
